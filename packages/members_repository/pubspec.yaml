@@ -1,0 +1,14 @@
+name: members_repository
+description: Members repository
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cloud_firestore: ^0.13.7
+  rxdart: ^0.24.0
+  equatable: ^1.0.0
+  firebase_core: ^0.4.5

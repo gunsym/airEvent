@@ -17,8 +17,11 @@ dependencies:
   google_fonts: ^1.1.0
   meta: ^1.1.8
   pedantic: ^1.9.0
+  flutter_form_bloc: ^0.19.0
   authentication_repository:
     path: packages/authentication_repository
+  members_repository:
+    path: packages/members_repository
 
 dev_dependencies:
   flutter_test:

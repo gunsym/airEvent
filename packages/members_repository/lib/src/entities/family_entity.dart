@@ -1,0 +1,47 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+import '../models/member.dart';
+
+class FamilyEntity extends Equatable {
+  final String familyCode;
+  final List<Member> members;
+
+  const FamilyEntity(this.familyCode, this.members);
+
+  Map<String, Object> toJson() {
+    return {
+      "familyCode": familyCode,
+      "members": members,
+    };
+  }
+
+  @override
+  List<Object> get props => [familyCode, members];
+
+  @override
+  String toString() {
+    return 'FamilyEntity { familyCode: $familyCode, members: $members }';
+  }
+
+  static FamilyEntity fromJson(Map<String, Object> json) {
+    return FamilyEntity(
+      json["familyCode"] as String,
+      json["members"] as List<Member>,
+    );
+  }
+
+  static FamilyEntity fromSnapshot(DocumentSnapshot snap) {
+    return FamilyEntity(
+      snap.documentID,
+      snap.data['members'],
+    );
+  }
+
+  Map<String, Object> toDocument() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    if (members != null) {
+      data[familyCode] = members.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
