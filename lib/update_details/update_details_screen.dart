@@ -153,10 +153,10 @@ class UpdateDetailsScreen extends StatelessWidget {
               resizeToAvoidBottomPadding: false,
               resizeToAvoidBottomInset: false,
               appBar: AppBar(title: Text('Update Details')),
-              floatingActionButton: FloatingActionButton(
-                onPressed: formBloc.submit,
-                child: Icon(Icons.send),
-              ),
+//              floatingActionButton: FloatingActionButton(
+//                onPressed: formBloc.submit,
+//                child: Icon(Icons.send),
+//              ),
               body: FormBlocListener<UpdateDetailsBloc, String, String>(
                   onSubmitting: (context, state) {
                 LoadingDialog.show(context);
@@ -247,6 +247,11 @@ class UpdateDetailsScreen extends StatelessWidget {
                               color: Colors.blue[100],
                               onPressed: formBloc.addMember,
                               child: Text('ADD MEMBER'),
+                            ),
+                            RaisedButton(
+                              color: Colors.red[200],
+                              onPressed: formBloc.submit,
+                              child: Text('Save'),
                             ),
                           ],
                         ),
