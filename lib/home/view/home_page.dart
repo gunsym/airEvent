@@ -1,9 +1,12 @@
+import 'package:air_event/update_details/update_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:air_event/authentication/authentication.dart';
 import 'package:air_event/home/home.dart';
+import 'package:members_repository/members_repository.dart';
 
 class HomePage extends StatelessWidget {
+  final MembersRepository membersRepository = FirebaseMembersRepository();
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => HomePage());
   }
@@ -35,6 +38,18 @@ class HomePage extends StatelessWidget {
             Text(user.email, style: textTheme.headline6),
             const SizedBox(height: 4.0),
             Text(user.name ?? '', style: textTheme.headline5),
+            FlatButton(
+              child: Text('Update Details'),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return UpdateDetailsScreen(
+                    name: user.email,
+                    membersRepository: membersRepository,
+                  );
+                }));
+              },
+            ),
           ],
         ),
       ),
