@@ -88,8 +88,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
     print('familyV1');
     print(familyV1);
     try {
-      final familyV3 = familyV1;
-      await membersRepository.addFamily(familyV3);
+      await membersRepository.addFamily(familyV1);
     } catch (e) {
       print(e);
     }
