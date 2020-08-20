@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:members_repository/members_repository.dart';
 class UpdateDetailsBloc extends FormBloc<String, String> {
   final String name;
   final MembersRepository membersRepository;
+  StreamSubscription _familySubscription;
   final familyCode = TextFieldBloc(name: 'familyCode');
 
   final members = ListFieldBloc<MemberFieldBloc>(name: 'members');
@@ -29,7 +31,11 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
   @override
   void onLoading() async {
     try {
-      await Future<void>.delayed(Duration(milliseconds: 1500));
+      //await Future<void>.delayed(Duration(milliseconds: 1500));
+      _familySubscription?.cancel();
+      _familySubscription = membersRepository.families().listen((family) {
+        print(family);
+      });
 
       if (_throwException) {
         // Simulate network error
@@ -158,107 +164,114 @@ class UpdateDetailsScreen extends StatelessWidget {
 //              ),
               body: FormBlocListener<UpdateDetailsBloc, String, String>(
                   onSubmitting: (context, state) {
-                LoadingDialog.show(context);
-              }, onSuccess: (context, state) {
-                LoadingDialog.hide(context);
+                    LoadingDialog.show(context);
+                  },
+                  onSuccess: (context, state) {
+                    LoadingDialog.hide(context);
 
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content:
-                      SingleChildScrollView(child: Text(state.successResponse)),
-                  duration: Duration(milliseconds: 1500),
-                ));
-              }, onFailure: (context, state) {
-                LoadingDialog.hide(context);
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: SingleChildScrollView(
+                          child: Text(state.successResponse)),
+                      duration: Duration(milliseconds: 1500),
+                    ));
+                  },
+                  onFailure: (context, state) {
+                    LoadingDialog.hide(context);
 
-                Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text(state.failureResponse)));
-              }, child: BlocBuilder<UpdateDetailsBloc, FormBlocState>(
-                builder: (context, state) {
-                  if (state is FormBlocLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (state is FormBlocLoadFailed) {
-                    return Center(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
-                            Icon(Icons.sentiment_dissatisfied, size: 70),
-                            SizedBox(height: 20),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
-                              alignment: Alignment.center,
-                              child: Text(
-                                state.failureResponse ??
-                                    'An error has occurred please try again later',
-                                style: TextStyle(fontSize: 25),
-                                textAlign: TextAlign.center,
-                              ),
+                    Scaffold.of(context).showSnackBar(
+                        SnackBar(content: Text(state.failureResponse)));
+                  },
+                  child: BlocBuilder<UpdateDetailsBloc, FormBlocState>(
+                    buildWhen: (previous, current) =>
+                        previous.runtimeType != current.runtimeType ||
+                        previous is FormBlocLoading &&
+                            current is FormBlocLoading,
+                    builder: (context, state) {
+                      if (state is FormBlocLoading) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (state is FormBlocLoadFailed) {
+                        return Center(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: <Widget>[
+                                Icon(Icons.sentiment_dissatisfied, size: 70),
+                                SizedBox(height: 20),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    state.failureResponse ??
+                                        'An error has occurred please try again later',
+                                    style: TextStyle(fontSize: 25),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                RaisedButton(
+                                  onPressed: formBloc.reload,
+                                  child: Text('RETRY'),
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 20),
-                            RaisedButton(
-                              onPressed: formBloc.reload,
-                              child: Text('RETRY'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  } else {
-                    return SingleChildScrollView(
-                      reverse: true,
-                      physics: ClampingScrollPhysics(),
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: bottom),
-                        child: Column(
-                          children: <Widget>[
-                            TextFieldBlocBuilder(
-                              textFieldBloc: formBloc.familyCode,
-                              decoration: InputDecoration(
-                                labelText: 'Family Name',
-                                prefixIcon: Icon(Icons.sentiment_satisfied),
-                              ),
-                            ),
-                            BlocBuilder<ListFieldBloc<MemberFieldBloc>,
-                                ListFieldBlocState<MemberFieldBloc>>(
-                              cubit: formBloc.members,
-                              builder: (context, state) {
-                                if (state.fieldBlocs.isNotEmpty) {
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: state.fieldBlocs.length,
-                                    itemBuilder: (context, i) {
-                                      return MemberCard(
-                                        memberIndex: i,
-                                        memberField: state.fieldBlocs[i],
-                                        onRemoveMember: () =>
-                                            formBloc.removeMember(i),
-                                        onAddSpecialNeeds: () =>
-                                            formBloc.addSpecialNeedsToMember(i),
+                          ),
+                        );
+                      } else {
+                        return SingleChildScrollView(
+                          reverse: true,
+                          physics: ClampingScrollPhysics(),
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: bottom),
+                            child: Column(
+                              children: <Widget>[
+                                TextFieldBlocBuilder(
+                                  textFieldBloc: formBloc.familyCode,
+                                  decoration: InputDecoration(
+                                    labelText: 'Family Name',
+                                    prefixIcon: Icon(Icons.sentiment_satisfied),
+                                  ),
+                                ),
+                                BlocBuilder<ListFieldBloc<MemberFieldBloc>,
+                                    ListFieldBlocState<MemberFieldBloc>>(
+                                  cubit: formBloc.members,
+                                  builder: (context, state) {
+                                    if (state.fieldBlocs.isNotEmpty) {
+                                      return ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: state.fieldBlocs.length,
+                                        itemBuilder: (context, i) {
+                                          return MemberCard(
+                                            memberIndex: i,
+                                            memberField: state.fieldBlocs[i],
+                                            onRemoveMember: () =>
+                                                formBloc.removeMember(i),
+                                            onAddSpecialNeeds: () => formBloc
+                                                .addSpecialNeedsToMember(i),
+                                          );
+                                        },
                                       );
-                                    },
-                                  );
-                                }
-                                return Container();
-                              },
+                                    }
+                                    return Container();
+                                  },
+                                ),
+                                RaisedButton(
+                                  color: Colors.blue[100],
+                                  onPressed: formBloc.addMember,
+                                  child: Text('ADD MEMBER'),
+                                ),
+                                RaisedButton(
+                                  color: Colors.red[200],
+                                  onPressed: formBloc.submit,
+                                  child: Text('Save'),
+                                ),
+                              ],
                             ),
-                            RaisedButton(
-                              color: Colors.blue[100],
-                              onPressed: formBloc.addMember,
-                              child: Text('ADD MEMBER'),
-                            ),
-                            RaisedButton(
-                              color: Colors.red[200],
-                              onPressed: formBloc.submit,
-                              child: Text('Save'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                },
-              )),
+                          ),
+                        );
+                      }
+                    },
+                  )),
             ),
           );
         },
