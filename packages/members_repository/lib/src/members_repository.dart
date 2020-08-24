@@ -13,5 +13,5 @@ abstract class MembersRepository {
 
   Future<void> addFamily(Family family);
 
-  Stream<List<Family>> families();
+  Stream<Family> family();
 }
