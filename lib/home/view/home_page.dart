@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return UpdateDetailsScreen(
-                    name: user.email,
+                    id: user.email,
                     membersRepository: membersRepository,
                   );
                 }));

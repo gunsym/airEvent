@@ -6,17 +6,18 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:members_repository/members_repository.dart';
 
 class UpdateDetailsBloc extends FormBloc<String, String> {
-  final String name;
+  final String id;
   final MembersRepository membersRepository;
   StreamSubscription _familySubscription;
+  Family myFamily;
   final familyCode = TextFieldBloc(name: 'familyCode');
 
   final members = ListFieldBloc<MemberFieldBloc>(name: 'members');
 
   UpdateDetailsBloc({
-    @required this.name,
+    @required this.id,
     @required this.membersRepository,
-  })  : assert(name != null, membersRepository != null),
+  })  : assert(id != null, membersRepository != null),
         super(isLoading: true) {
     addFieldBlocs(
       fieldBlocs: [
@@ -33,8 +34,9 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
     try {
       //await Future<void>.delayed(Duration(milliseconds: 1500));
       _familySubscription?.cancel();
-      _familySubscription = membersRepository.family().listen((family) {
+      _familySubscription = membersRepository.family(id).listen((family) {
         print(family);
+        myFamily = family;
       });
 
       if (_throwException) {
@@ -42,7 +44,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
         throw Exception('Network request failed. Please try again later.');
       }
 
-      familyCode.updateInitialValue('Gunawan1');
+      familyCode.updateInitialValue(myFamily.familyCode);
 
       emitLoaded();
     } catch (e) {
@@ -81,7 +83,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
       familyCode: familyCode.value,
       members: members.value.map<Member>((memberField) {
         return Member(
-          id: name,
+          id: id,
           firstName: memberField.firstName.value,
           lastName: memberField.lastName.value,
           specialNeeds: memberField.specialNeeds.value
@@ -128,18 +130,18 @@ class MemberFieldBloc extends GroupFieldBloc {
 }
 
 class UpdateDetailsScreen extends StatelessWidget {
-  final String name;
+  final String id;
   final MembersRepository membersRepository;
   UpdateDetailsScreen(
-      {Key key, @required this.name, @required this.membersRepository})
-      : assert(name != null, membersRepository != null),
+      {Key key, @required this.id, @required this.membersRepository})
+      : assert(id != null, membersRepository != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          UpdateDetailsBloc(name: name, membersRepository: membersRepository),
+          UpdateDetailsBloc(id: id, membersRepository: membersRepository),
       child: Builder(
         builder: (context) {
           //ignore: close_sinks

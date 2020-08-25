@@ -30,12 +30,15 @@ class FirebaseMembersRepository implements MembersRepository {
         .setData(family.toEntity().toDocument());
   }
 
-  Stream<Family> family() {
-//    return memberCollection.snapshots().map((snapshot) {
-//      return snapshot.documents
-//          .map((doc) => Family.fromEntity(FamilyEntity.fromSnapshot(doc)))
-//          .toList();
-//    });
-    return memberCollection.document('a@a.com').snapshots().map((snapshot) => Family.fromEntity(FamilyEntity.fromSnapshot(snapshot)));
+  Stream<Family> family(String id) {
+    return memberCollection.document(id).snapshots().map((snapshot) => Family.fromEntity(FamilyEntity.fromSnapshot(snapshot)));
+  }
+
+  Stream<List<Family>> families() {
+    return memberCollection.snapshots().map((snapshot) {
+      return snapshot.documents
+          .map((doc) => Family.fromEntity(FamilyEntity.fromSnapshot(doc)))
+          .toList();
+    });
   }
 }
