@@ -1,3 +1,4 @@
+import 'package:air_event/update_details/bloc/bloc.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:air_event/home/home.dart';
 import 'package:air_event/login/login.dart';
 import 'package:air_event/splash/splash.dart';
 import 'package:air_event/theme.dart';
+import 'package:http/http.dart' as http;
 
 class App extends StatelessWidget {
   const App({
@@ -20,10 +22,20 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: authenticationRepository,
-      child: BlocProvider(
-        create: (_) => AuthenticationBloc(
-          authenticationRepository: authenticationRepository,
-        ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (_) => AuthenticationBloc(
+              authenticationRepository: authenticationRepository,
+            ),
+          ),
+          BlocProvider(
+            create: (context) {
+              return MemberListBloc(httpClient: http.Client())
+                ..add(MemberListFetched());
+            },
+          )
+        ],
         child: AppView(),
       ),
     );
