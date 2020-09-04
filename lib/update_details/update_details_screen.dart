@@ -35,7 +35,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
       //await Future<void>.delayed(Duration(milliseconds: 1500));
       _familySubscription?.cancel();
       _familySubscription = membersRepository.family(id).listen((family) {
-        print(family.members.toString());
+        print(family);
         myFamily = family;
       });
 
