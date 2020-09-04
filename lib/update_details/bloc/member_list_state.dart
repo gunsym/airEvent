@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:air_event/update_details/bloc/models/models.dart';
+import 'package:air_event/update_details/member_list.dart';
 
 abstract class MemberListState extends Equatable {
   const MemberListState();
@@ -13,28 +13,28 @@ class MemberListInitial extends MemberListState {}
 class MemberListFailure extends MemberListState {}
 
 class MemberListSuccess extends MemberListState {
-  final List<MemberList> memberList;
+  final List<MemberList> memberLists;
   final bool hasReachedMax;
 
   const MemberListSuccess({
-    this.memberList,
+    this.memberLists,
     this.hasReachedMax,
   });
 
   MemberListSuccess copyWith({
-    List<MemberList> posts,
+    List<MemberList> memberLists,
     bool hasReachedMax,
   }) {
     return MemberListSuccess(
-      memberList: posts ?? this.memberList,
+      memberLists: memberLists ?? this.memberLists,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
     );
   }
 
   @override
-  List<Object> get props => [memberList, hasReachedMax];
+  List<Object> get props => [memberLists, hasReachedMax];
 
   @override
   String toString() =>
-      'MemberListLoaded { memberLists: ${memberList.length}, hasReachedMax: $hasReachedMax }';
+      'MemberListLoaded { memberLists: ${memberLists.length}, hasReachedMax: $hasReachedMax }';
 }

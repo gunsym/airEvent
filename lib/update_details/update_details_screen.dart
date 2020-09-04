@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:air_event/update_details/bloc/bloc.dart';
-import 'package:air_event/update_details/bloc/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -131,7 +129,7 @@ class MemberFieldBloc extends GroupFieldBloc {
   }) : super([firstName, lastName, specialNeeds], name: name);
 }
 
-class UpdateDetailsScreen extends StatefulWidget {
+class UpdateDetailsScreen extends StatelessWidget {
   final String id;
   final MembersRepository membersRepository;
   UpdateDetailsScreen(
@@ -140,26 +138,10 @@ class UpdateDetailsScreen extends StatefulWidget {
         super(key: key);
 
   @override
-  _UpdateDetailsScreenState createState() => _UpdateDetailsScreenState();
-}
-
-class _UpdateDetailsScreenState extends State<UpdateDetailsScreen> {
-  final _scrollController = ScrollController();
-  final _scrollThreshold = 200.0;
-  MemberListBloc _memberListBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-    _memberListBloc = BlocProvider.of<MemberListBloc>(context);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => UpdateDetailsBloc(
-          id: widget.id, membersRepository: widget.membersRepository),
+      create: (context) =>
+          UpdateDetailsBloc(id: id, membersRepository: membersRepository),
       child: Builder(
         builder: (context) {
           //ignore: close_sinks
@@ -285,53 +267,6 @@ class _UpdateDetailsScreenState extends State<UpdateDetailsScreen> {
                                   onPressed: formBloc.submit,
                                   child: Text('Save'),
                                 ),
-                                BlocBuilder<MemberListBloc, MemberListState>(
-                                  builder: (context, state) {
-                                    if (state is MemberListFailure) {
-                                      return Center(
-                                        child: Text('failed to fetch posts'),
-                                      );
-                                    }
-                                    if (state is MemberListSuccess) {
-                                      if (state.memberList.isEmpty) {
-                                        return Center(
-                                          child: Text('no posts'),
-                                        );
-                                      }
-                                      return Row(
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: SizedBox(
-                                              height: 200.0,
-                                              child: ListView.builder(
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return index >=
-                                                          state
-                                                              .memberList.length
-                                                      ? BottomLoader()
-                                                      : MemberListWidget(
-                                                          memberList:
-                                                              state.memberList[
-                                                                  index]);
-                                                },
-                                                itemCount: state.hasReachedMax
-                                                    ? state.memberList.length
-                                                    : state.memberList.length +
-                                                        1,
-                                                controller: _scrollController,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                    return Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  },
-                                ),
                               ],
                             ),
                           ),
@@ -344,20 +279,6 @@ class _UpdateDetailsScreenState extends State<UpdateDetailsScreen> {
         },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    if (maxScroll - currentScroll <= _scrollThreshold) {
-      _memberListBloc.add(MemberListFetched());
-    }
   }
 }
 
@@ -493,44 +414,6 @@ class LoadingDialog extends StatelessWidget {
   }
 }
 
-class BottomLoader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: Center(
-        child: SizedBox(
-          width: 33,
-          height: 33,
-          child: CircularProgressIndicator(
-            strokeWidth: 1.5,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MemberListWidget extends StatelessWidget {
-  final MemberList memberList;
-
-  const MemberListWidget({Key key, @required this.memberList})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Text(
-        '${memberList.id}',
-        style: TextStyle(fontSize: 10.0),
-      ),
-      title: Text(memberList.title),
-      isThreeLine: true,
-      subtitle: Text(memberList.body),
-      dense: true,
-    );
-  }
-}
 //class SuccessScreen extends StatelessWidget {
 //  final MembersRepository membersRepository;
 //  SuccessScreen({Key key, @required this.membersRepository})
