@@ -3,17 +3,15 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:air_event/update_details/bloc/bloc.dart';
-import 'package:air_event/update_details/models/models.dart';
-import 'package:members_repository/members_repository.dart';
+import 'package:air_event/update_details/bloc/models/models.dart';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MemberListBloc extends Bloc<MemberListEvent, MemberListState> {
-  final MembersRepository membersRepository;
-  StreamSubscription _familySubscription;
+  final http.Client httpClient;
 
-  MemberListBloc({@required this.membersRepository})
-      : super(MemberListInitial());
+  MemberListBloc({@required this.httpClient}) : super(MemberListInitial());
 
   @override
   Stream<Transition<MemberListEvent, MemberListState>> transformEvents(
@@ -29,7 +27,6 @@ class MemberListBloc extends Bloc<MemberListEvent, MemberListState> {
   @override
   Stream<MemberListState> mapEventToState(MemberListEvent event) async* {
     final currentState = state;
-    print('hi2');
     if (event is MemberListFetched && !_hasReachedMax(currentState)) {
       try {
         if (currentState is MemberListInitial) {
@@ -57,22 +54,19 @@ class MemberListBloc extends Bloc<MemberListEvent, MemberListState> {
       state is MemberListSuccess && state.hasReachedMax;
 
   Future<List<MemberList>> _fetchMemberList(int startIndex, int limit) async {
-    print('hi');
-    try {
-      //await Future<void>.delayed(Duration(milliseconds: 1500));
-      _familySubscription?.cancel();
-      _familySubscription =
-          membersRepository.family('a@a.com').listen((family) {
-        print(family);
-        return family.members.map((e) {
-          return MemberList(
-            title: e.firstName,
-          );
-        }).toList();
-      });
-    } catch (_) {
-      throw Exception('Network request failed. Please try again later.');
+    final response = await httpClient.get(
+        'https://jsonplaceholder.typicode.com/posts?_start=$startIndex&_limit=$limit');
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as List;
+      return data.map((rawPost) {
+        return MemberList(
+          id: rawPost['id'],
+          title: rawPost['title'],
+          body: rawPost['body'],
+        );
+      }).toList();
+    } else {
+      throw Exception('error fetching posts');
     }
-    return null;
   }
 }

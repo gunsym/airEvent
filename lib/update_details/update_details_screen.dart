@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:air_event/update_details/bloc/bloc.dart';
-import 'package:air_event/update_details/models/models.dart';
+import 'package:air_event/update_details/bloc/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -37,7 +37,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
       //await Future<void>.delayed(Duration(milliseconds: 1500));
       _familySubscription?.cancel();
       _familySubscription = membersRepository.family(id).listen((family) {
-        //print(family.members.toString());
+        print(family.members.toString());
         myFamily = family;
       });
 
@@ -152,22 +152,14 @@ class _UpdateDetailsScreenState extends State<UpdateDetailsScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    //_memberListBloc = BlocProvider.of<MemberListBloc>(context);
+    _memberListBloc = BlocProvider.of<MemberListBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => UpdateDetailsBloc(
-              id: widget.id, membersRepository: widget.membersRepository),
-        ),
-        BlocProvider(
-          create: (context) =>
-              MemberListBloc(membersRepository: widget.membersRepository),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => UpdateDetailsBloc(
+          id: widget.id, membersRepository: widget.membersRepository),
       child: Builder(
         builder: (context) {
           //ignore: close_sinks

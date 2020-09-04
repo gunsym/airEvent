@@ -7,18 +7,16 @@ import 'package:air_event/home/home.dart';
 import 'package:air_event/login/login.dart';
 import 'package:air_event/splash/splash.dart';
 import 'package:air_event/theme.dart';
-import 'package:members_repository/members_repository.dart';
+import 'package:http/http.dart' as http;
 
 class App extends StatelessWidget {
   const App({
     Key key,
     @required this.authenticationRepository,
-    @required this.membersRepository,
   })  : assert(authenticationRepository != null),
         super(key: key);
 
   final AuthenticationRepository authenticationRepository;
-  final MembersRepository membersRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,7 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) {
-              return MemberListBloc(membersRepository: membersRepository)
+              return MemberListBloc(httpClient: http.Client())
                 ..add(MemberListFetched());
             },
           )

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:air_event/update_details/models/models.dart';
+import 'package:air_event/update_details/bloc/models/models.dart';
 
 abstract class MemberListState extends Equatable {
   const MemberListState();
