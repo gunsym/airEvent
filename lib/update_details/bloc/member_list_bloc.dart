@@ -31,28 +31,14 @@ class MemberListBloc extends Bloc<MemberListEvent, MemberListState> {
     if (event is MemberListFetched && !_hasReachedMax(currentState)) {
       try {
         if (currentState is MemberListInitial) {
-          final posts = await _fetchMemberLists(0, 20);
-          yield MemberListSuccess(memberLists: posts, hasReachedMax: false);
-          return;
+          //final memberLists = await
         }
-        if (currentState is MemberListSuccess) {
-          final memberLists =
-              await _fetchMemberLists(currentState.memberLists.length, 20);
-          yield memberLists.isEmpty
-              ? currentState.copyWith(hasReachedMax: true)
-              : MemberListSuccess(
-                  memberLists: currentState.memberLists + memberLists,
-                  hasReachedMax: false,
-                );
-        }
-      } catch (_) {
-        yield MemberListFailure();
-      }
+      } catch (_) {}
     }
   }
 
   bool _hasReachedMax(MemberListState state) =>
-      state is MemberListState; // && state.hasReachedMax;
+      state is MemberListState && state.hasReachedMax;
 
   Future<List<MemberList>> _fetchMemberLists(int startIndex, int limit) async {
     try {
@@ -70,6 +56,5 @@ class MemberListBloc extends Bloc<MemberListEvent, MemberListState> {
     } catch (_) {
       throw Exception('Network request failed. Please try again later.');
     }
-    return null;
   }
 }
