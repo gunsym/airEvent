@@ -8,6 +8,7 @@ import 'package:air_event/home/home.dart';
 import 'package:air_event/login/login.dart';
 import 'package:air_event/splash/splash.dart';
 import 'package:air_event/theme.dart';
+import 'package:members_repository/members_repository.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -31,7 +32,8 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) =>
-                ListBloc(repository: Repository())..add(Fetch()),
+                ListBloc(membersRepository: FirebaseMembersRepository())
+                  ..add(Fetch()),
           ),
         ],
         child: AppView(),

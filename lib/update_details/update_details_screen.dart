@@ -37,7 +37,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
       //await Future<void>.delayed(Duration(milliseconds: 1500));
       _familySubscription?.cancel();
       _familySubscription = membersRepository.family(id).listen((family) {
-        print(family);
+        //print(family);
         myFamily = family;
       });
 
@@ -243,7 +243,7 @@ class UpdateDetailsScreen extends StatelessWidget {
                                       );
                                     }
                                     if (state is Loaded) {
-                                      if (state.items.isEmpty) {
+                                      if (state.members.isEmpty) {
                                         return Center(
                                           child: Text('no content'),
                                         );
@@ -255,14 +255,14 @@ class UpdateDetailsScreen extends StatelessWidget {
                                         itemBuilder:
                                             (BuildContext context, int index) {
                                           return ItemTile(
-                                            item: state.items[index],
+                                            member: state.members[index],
                                             onDeletePressed: (id) {
                                               BlocProvider.of<ListBloc>(context)
                                                   .add(Delete(id: id));
                                             },
                                           );
                                         },
-                                        itemCount: state.items.length,
+                                        itemCount: state.members.length,
                                       );
                                     }
                                     return Center(
@@ -321,25 +321,26 @@ class UpdateDetailsScreen extends StatelessWidget {
 }
 
 class ItemTile extends StatelessWidget {
-  final Item item;
+  //final Item item;
+  final Member member;
   final Function(String) onDeletePressed;
 
   const ItemTile({
     Key key,
-    @required this.item,
+    @required this.member,
     @required this.onDeletePressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Text('#${item.id}'),
-      title: Text(item.value),
-      trailing: item.isDeleting
+      leading: Text('#${member.id}'),
+      title: Text(member.firstName),
+      trailing: member.isDeleting
           ? CircularProgressIndicator()
           : IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () => onDeletePressed(item.id),
+              onPressed: () => onDeletePressed(member.id),
             ),
     );
   }

@@ -10,15 +10,16 @@ abstract class ListState extends Equatable {
 class Loading extends ListState {}
 
 class Loaded extends ListState {
-  final List<Item> items;
+  //final List<Item> items;
+  final List<Member> members;
 
-  const Loaded({@required this.items});
-
-  @override
-  List<Object> get props => [items];
+  const Loaded({@required this.members});
 
   @override
-  String toString() => 'Loaded { items: ${items.length} }';
+  List<Object> get props => [members];
+
+  @override
+  String toString() => 'Loaded { items: ${members.length} }';
 }
 
 class Failure extends ListState {}
