@@ -5,22 +5,19 @@ class Member {
   String firstName;
   String lastName;
   List<String> specialNeeds;
-  bool isDeleting;
 
-  Member(
-      {this.firstName, this.lastName, this.id, this.specialNeeds, this.isDeleting = false});
+  Member({this.firstName, this.lastName, this.id, this.specialNeeds});
 
-  Member copyWith({String id,
-    String firstName,
-    String lastName,
-    List<String> specialNeeds, bool isDeleting,
-  }) {
+  Member copyWith(
+      {String id,
+      String firstName,
+      String lastName,
+      List<String> specialNeeds}) {
     return Member(
       id: id ?? this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       specialNeeds: specialNeeds ?? this.specialNeeds,
-      isDeleting: isDeleting ?? this.isDeleting,
     );
   }
 
@@ -29,27 +26,25 @@ class Member {
       id.hashCode ^
       firstName.hashCode ^
       lastName.hashCode ^
-      specialNeeds.hashCode ^
-      isDeleting.hashCode;
+      specialNeeds.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Member &&
-              runtimeType == other.runtimeType &&
-              firstName == other.firstName &&
-              lastName == other.lastName &&
-              id == other.id &&
-              specialNeeds == other.specialNeeds &&
-              isDeleting == other.isDeleting;
+      other is Member &&
+          runtimeType == other.runtimeType &&
+          firstName == other.firstName &&
+          lastName == other.lastName &&
+          id == other.id &&
+          specialNeeds == other.specialNeeds;
 
   @override
   String toString() {
-    return 'Member{firstName: $firstName, lastName: $lastName, id: $id, specialNeeds: $specialNeeds, isDeleting: $isDeleting}';
+    return 'Member{firstName: $firstName, lastName: $lastName, id: $id, specialNeeds: $specialNeeds}';
   }
 
   MemberEntity toEntity() {
-    return MemberEntity(id, firstName, lastName, specialNeeds, isDeleting);
+    return MemberEntity(id, firstName, lastName, specialNeeds);
   }
 
   static Member fromEntity(MemberEntity entity) {
@@ -58,7 +53,6 @@ class Member {
       lastName: entity.lastName,
       id: entity.id,
       specialNeeds: entity.specialNeeds,
-      isDeleting: entity.isDeleting,
     );
   }
 
@@ -67,7 +61,6 @@ class Member {
     firstName = json['firstName'];
     lastName = json['lastName'];
     specialNeeds = json['specialNeeds'].cast<String>();
-    isDeleting = json['isDeleting'];
   }
 
   Map<String, dynamic> toJson() {
@@ -76,7 +69,6 @@ class Member {
     data['firstName'] = this.firstName;
     data['lastName'] = this.lastName;
     data['specialNeeds'] = this.specialNeeds;
-    data['isDeleting'] = this.isDeleting;
     return data;
   }
 }
