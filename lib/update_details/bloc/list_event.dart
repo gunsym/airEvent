@@ -32,3 +32,12 @@ class Deleted extends ListEvent {
   @override
   String toString() => 'Deleted { id: $id }';
 }
+
+class Updated extends ListEvent {
+  final List<Member> members;
+
+  const Updated(this.members);
+
+  @override
+  List<Object> get props => [members];
+}

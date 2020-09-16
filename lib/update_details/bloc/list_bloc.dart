@@ -22,20 +22,10 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     ListEvent event,
   ) async* {
     if (event is Fetch) {
-      try {
-        //final items = await repository.fetchItems();
-        _familySubscription?.cancel();
-        _familySubscription = membersRepository
-            .family('simplycaddie.com@gmail.com')
-            .listen((family) {
-          myList = family.members.map((e) => e.toJson()).toList();
-          print(myList);
-        });
-        yield Loaded(members: myList);
-      } catch (e) {
-        print(e);
-        yield Failure();
-      }
+      yield* _mapLoadListToState();
+    }
+    if (event is Updated) {
+      yield* _mapListUpdateToState(event);
     }
     if (event is Delete) {
       // final listState = state;
@@ -58,5 +48,35 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       //   yield Loaded(items: updatedItems);
       // }
     }
+  }
+
+  Stream<ListState> _mapLoadListToState() async* {
+    try {
+      //final items = await repository.fetchItems();
+      _familySubscription?.cancel();
+      _familySubscription =
+          membersRepository.family('simplycaddie.com@gmail.com').listen(
+                (family) => add(Updated(family.members)),
+              );
+      //{
+      //myList = family.members.map((e) => e.toJson()).toList();
+      //print(myList);
+      //});
+      //print(myList);
+      //yield Loaded(members: myList);
+    } catch (e) {
+      print(e);
+      yield Failure();
+    }
+  }
+
+  Stream<ListState> _mapListUpdateToState(Updated event) async* {
+    yield Loaded(members: event.members);
+  }
+
+  @override
+  Future<void> close() {
+    _familySubscription?.cancel();
+    return super.close();
   }
 }
