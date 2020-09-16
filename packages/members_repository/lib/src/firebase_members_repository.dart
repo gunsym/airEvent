@@ -20,7 +20,7 @@ class FirebaseMembersRepository implements MembersRepository {
 
   @override
   Future<void> removeMember(Member member) async {
-    return memberCollection.document(member.id).delete();
+    return memberCollection.document(member.id).updateData({'simplycaddie': []});
   }
 
   Future<void> addFamily(Family family) {

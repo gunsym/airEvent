@@ -10,27 +10,35 @@ abstract class ListEvent extends Equatable {
 class Fetch extends ListEvent {}
 
 class Delete extends ListEvent {
-  final String id;
+  //final String id;
+  final Member member;
 
-  const Delete({@required this.id});
+  //const Deleted({@required this.id});
+  const Delete({@required this.member});
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [member];
+  //List<Object> get props => [id];
 
   @override
-  String toString() => 'Delete { id: $id }';
+  String toString() => 'Delete { member: $member }';
+//String toString() => 'Delete { id: $id }';
 }
 
 class Deleted extends ListEvent {
-  final String id;
+  //final String id;
+  final Member member;
 
-  const Deleted({@required this.id});
+  //const Deleted({@required this.id});
+  const Deleted({@required this.member});
 
   @override
-  List<Object> get props => [id];
+  List<Object> get props => [member];
+  //List<Object> get props => [id];
 
   @override
-  String toString() => 'Deleted { id: $id }';
+  String toString() => 'Deleted { member: $member }';
+//String toString() => 'Deleted { id: $id }';
 }
 
 class Updated extends ListEvent {

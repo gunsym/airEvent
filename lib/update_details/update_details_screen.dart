@@ -256,9 +256,11 @@ class UpdateDetailsScreen extends StatelessWidget {
                                             (BuildContext context, int index) {
                                           return ItemTile(
                                             member: state.members[index],
-                                            onDeletePressed: (id) {
+                                            onDeletePressed: (member) {
                                               BlocProvider.of<ListBloc>(context)
-                                                  .add(Delete(id: id));
+                                                  .add(Delete(
+                                                      member: state
+                                                          .members[index]));
                                             },
                                           );
                                         },

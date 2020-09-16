@@ -28,6 +28,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       yield* _mapListUpdateToState(event);
     }
     if (event is Delete) {
+      yield* _mapDeleteListToState(event);
       // final listState = state;
       // if (listState is Loaded) {
       //   final List<Item> updatedItems =
@@ -72,6 +73,10 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
   Stream<ListState> _mapListUpdateToState(Updated event) async* {
     yield Loaded(members: event.members);
+  }
+
+  Stream<ListState> _mapDeleteListToState(Delete event) async* {
+    membersRepository.removeMember(event.member);
   }
 
   @override
