@@ -27,7 +27,7 @@ class FirebaseMembersRepository implements MembersRepository {
   Future<void> addFamily(Family family) {
     //TODO: get email address
     return memberCollection
-        .document(family.members[0].id)
+        .document(family.members[0].email)
         .setData(family.toEntity().toDocument());
   }
 

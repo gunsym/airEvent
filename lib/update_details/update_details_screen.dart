@@ -8,7 +8,7 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:members_repository/members_repository.dart';
 
 class UpdateDetailsBloc extends FormBloc<String, String> {
-  final String id;
+  final String email;
   final MembersRepository membersRepository;
   StreamSubscription _familySubscription;
   Family myFamily;
@@ -17,9 +17,9 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
   final members = ListFieldBloc<MemberFieldBloc>(name: 'members');
 
   UpdateDetailsBloc({
-    @required this.id,
+    @required this.email,
     @required this.membersRepository,
-  })  : assert(id != null, membersRepository != null),
+  })  : assert(email != null, membersRepository != null),
         super(isLoading: true) {
     addFieldBlocs(
       fieldBlocs: [
@@ -36,7 +36,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
     try {
       //await Future<void>.delayed(Duration(milliseconds: 1500));
       _familySubscription?.cancel();
-      _familySubscription = membersRepository.family(id).listen((family) {
+      _familySubscription = membersRepository.family(email).listen((family) {
         //print(family);
         myFamily = family;
       });
@@ -85,7 +85,8 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
       familyCode: familyCode.value,
       members: members.value.map<Member>((memberField) {
         return Member(
-          id: id,
+          //id: id,
+          email: email,
           firstName: memberField.firstName.value,
           lastName: memberField.lastName.value,
           specialNeeds: memberField.specialNeeds.value
@@ -132,18 +133,18 @@ class MemberFieldBloc extends GroupFieldBloc {
 }
 
 class UpdateDetailsScreen extends StatelessWidget {
-  final String id;
+  final String email;
   final MembersRepository membersRepository;
   UpdateDetailsScreen(
-      {Key key, @required this.id, @required this.membersRepository})
-      : assert(id != null, membersRepository != null),
+      {Key key, @required this.email, @required this.membersRepository})
+      : assert(email != null, membersRepository != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          UpdateDetailsBloc(id: id, membersRepository: membersRepository),
+          UpdateDetailsBloc(email: email, membersRepository: membersRepository),
       child: Builder(
         builder: (context) {
           //ignore: close_sinks
@@ -336,7 +337,8 @@ class ItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Text('#${member.id}'),
+      //leading: Text('#${member.id}'),
+      leading: Text(member.lastName),
       title: Text(member.firstName),
       trailing: member.isDeleting
           ? CircularProgressIndicator()
