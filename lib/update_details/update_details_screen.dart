@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:air_event/update_details/bloc/list_bloc.dart';
-import 'package:air_event/update_details/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -80,20 +79,24 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
+    var existingMembers = myFamily.members.toList();
+    var newMembers = members.value.map<Member>((memberField) {
+      return Member(
+        //id: id,
+        email: email,
+        firstName: memberField.firstName.value,
+        lastName: memberField.lastName.value,
+        specialNeeds: memberField.specialNeeds.value
+            .map((specialNeedsField) => specialNeedsField.value)
+            .toList(),
+      );
+    }).toList();
+    var combinedMembers = [...?existingMembers, ...?newMembers];
+    //print('combinedList ' + combinedMembers.toString());
     // Without serialization
     final familyV1 = Family(
       familyCode: familyCode.value,
-      members: members.value.map<Member>((memberField) {
-        return Member(
-          //id: id,
-          email: email,
-          firstName: memberField.firstName.value,
-          lastName: memberField.lastName.value,
-          specialNeeds: memberField.specialNeeds.value
-              .map((specialNeedsField) => specialNeedsField.value)
-              .toList(),
-        );
-      }).toList(),
+      members: combinedMembers,
     );
 
     print('familyV1');

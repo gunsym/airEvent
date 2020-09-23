@@ -3,8 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:members_repository/members_repository.dart';
 import 'package:meta/meta.dart';
-import 'package:air_event/update_details/repository.dart';
-import 'package:air_event/update_details/models/models.dart';
 
 part 'list_event.dart';
 part 'list_state.dart';
@@ -41,14 +39,14 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       //   });
       // }
     }
-    if (event is Deleted) {
-      // final listState = state;
-      // if (listState is Loaded) {
-      //   final List<Item> updatedItems = List<Item>.from(listState.items)
-      //     ..removeWhere((item) => item.id == event.id);
-      //   yield Loaded(items: updatedItems);
-      // }
-    }
+    //if (event is Deleted) {
+    // final listState = state;
+    // if (listState is Loaded) {
+    //   final List<Item> updatedItems = List<Item>.from(listState.items)
+    //     ..removeWhere((item) => item.id == event.id);
+    //   yield Loaded(items: updatedItems);
+    // }
+    //}
   }
 
   Stream<ListState> _mapLoadListToState() async* {

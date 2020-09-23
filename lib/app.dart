@@ -1,5 +1,4 @@
 import 'package:air_event/update_details/bloc/list_bloc.dart';
-import 'package:air_event/update_details/repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
