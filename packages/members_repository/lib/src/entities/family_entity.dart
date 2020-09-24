@@ -31,7 +31,7 @@ class FamilyEntity extends Equatable {
   }
 
   static FamilyEntity fromSnapshot(DocumentSnapshot snap) {
-    List family = snap.data['simplycaddie.com@gmail.com'];
+    List family = snap.data['simplycaddie'];
     List<Member> myMembers = List<Member>();
     for(var member in family){
       //Member myMember = Member.fromJson(member);
