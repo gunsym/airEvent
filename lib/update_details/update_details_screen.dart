@@ -265,8 +265,9 @@ class UpdateDetailsScreen extends StatelessWidget {
                                             onDeletePressed: (member) {
                                               BlocProvider.of<ListBloc>(context)
                                                   .add(Delete(
-                                                      member: state
-                                                          .members[index]));
+                                                member: index,
+                                                members: state.members,
+                                              ));
                                             },
                                           );
                                         },

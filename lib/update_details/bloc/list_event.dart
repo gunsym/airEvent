@@ -11,17 +11,18 @@ class Fetch extends ListEvent {}
 
 class Delete extends ListEvent {
   //final String id;
-  final Member member;
+  final int member;
+  final List<Member> members;
 
   //const Deleted({@required this.id});
-  const Delete({@required this.member});
+  const Delete({@required this.member, this.members});
 
   @override
-  List<Object> get props => [member];
+  List<Object> get props => [member, members];
   //List<Object> get props => [id];
 
   @override
-  String toString() => 'Delete { member: $member }';
+  String toString() => 'Delete { member: $member, members: $members }';
 //String toString() => 'Delete { id: $id }';
 }
 

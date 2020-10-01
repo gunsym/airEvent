@@ -9,7 +9,7 @@ import 'package:members_repository/members_repository.dart';
 abstract class MembersRepository {
   Future<void> addMember(Member member);
 
-  Future<void> removeMember(Member member);
+  Future<void> removeMember(int member, List<Member> members);
 
   Future<void> addFamily(Family family);
 

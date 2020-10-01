@@ -77,7 +77,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   }
 
   Stream<ListState> _mapDeleteListToState(Delete event) async* {
-    membersRepository.removeMember(event.member);
+    membersRepository.removeMember(event.member, event.members);
   }
 
   @override

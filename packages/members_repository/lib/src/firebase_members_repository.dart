@@ -19,9 +19,21 @@ class FirebaseMembersRepository implements MembersRepository {
   }
 
   @override
-  Future<void> removeMember(Member member) async {
+  Future<void> removeMember(int member, List<Member> members) async {
+    //var myMembers = List.from(members);
+    members.removeAt(member);
+    final familyV1 = Family(
+      /// use registration type [family / individual]
+      familyCode: 'family',
+      members: members,
+    );
+    print('DELETE INDEX : '+ member.toString());
+    print('LIST OF MEMBERS : '+ members.toString());
     //TODO: duplicate family, remove member and set data
-    return memberCollection.document(member.id).updateData({'simplycaddie': []});
+    //return memberCollection.document(members[0].email).updateData({'simplycaddie': []});
+    return memberCollection
+        .document(members[0].email)
+        .setData(familyV1.toEntity().toDocument());
   }
 
   Future<void> addFamily(Family family) {
