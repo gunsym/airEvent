@@ -45,7 +45,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
         throw Exception('Network request failed. Please try again later.');
       }
 
-      familyCode.updateInitialValue(myFamily.familyCode);
+      //familyCode.updateInitialValue(myFamily.familyCode);
 
       emitLoaded();
     } catch (e) {
@@ -86,6 +86,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
         email: email,
         firstName: memberField.firstName.value,
         lastName: memberField.lastName.value,
+        familyCode: familyCode.value,
         specialNeeds: memberField.specialNeeds.value
             .map((specialNeedsField) => specialNeedsField.value)
             .toList(),

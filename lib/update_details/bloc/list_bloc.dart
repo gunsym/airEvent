@@ -53,10 +53,13 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     try {
       //final items = await repository.fetchItems();
       _familySubscription?.cancel();
+
+      /// using document id [email address]
       _familySubscription =
           membersRepository.family('simplycaddie.com@gmail.com').listen(
                 (family) => add(Updated(family.members)),
               );
+
       //{
       //myList = family.members.map((e) => e.toJson()).toList();
       //print(myList);
