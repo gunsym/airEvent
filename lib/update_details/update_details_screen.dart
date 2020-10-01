@@ -45,7 +45,7 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
         throw Exception('Network request failed. Please try again later.');
       }
 
-      //familyCode.updateInitialValue(myFamily.familyCode);
+      familyCode.updateInitialValue(myFamily.members[0].familyCode);
 
       emitLoaded();
     } catch (e) {
@@ -96,7 +96,8 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
     //print('combinedList ' + combinedMembers.toString());
     // Without serialization
     final familyV1 = Family(
-      familyCode: familyCode.value,
+      /// use registration type [family / individual]
+      familyCode: 'family',
       members: combinedMembers,
     );
 
