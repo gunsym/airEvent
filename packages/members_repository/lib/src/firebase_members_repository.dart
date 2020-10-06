@@ -22,7 +22,7 @@ class FirebaseMembersRepository implements MembersRepository {
   Future<void> removeMember(int member, List<Member> members) async {
     //var myMembers = List.from(members);
     members.removeAt(member);
-    final familyV1 = Family(
+    final myFamily = Family(
       /// use registration type [family / individual]
       familyCode: 'family',
       members: members,
@@ -33,7 +33,7 @@ class FirebaseMembersRepository implements MembersRepository {
     //return memberCollection.document(members[0].email).updateData({'simplycaddie': []});
     return memberCollection
         .document(members[0].email)
-        .setData(familyV1.toEntity().toDocument());
+        .setData(myFamily.toEntity().toDocument());
   }
 
   Future<void> addFamily(Family family) {

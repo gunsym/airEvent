@@ -329,7 +329,7 @@ class UpdateDetailsScreen extends StatelessWidget {
   }
 }
 
-class ItemTile extends StatelessWidget {
+class ItemTile extends StatefulWidget {
   //final Item item;
   final Member member;
   final Function(String) onDeletePressed;
@@ -341,16 +341,48 @@ class ItemTile extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _ItemTileState createState() => _ItemTileState();
+}
+
+class _ItemTileState extends State<ItemTile> {
+  int memberIndex = 0;
+  bool _isEnabled = false;
+  @override
   Widget build(BuildContext context) {
-    return ListTile(
+    return ExpansionTile(
       //leading: Text('#${member.id}'),
-      leading: Text(member.lastName),
-      title: Text(member.firstName),
-      trailing: member.isDeleting
+      //leading: Text(widget.member.lastName),
+      leading: GestureDetector(
+        child: new Icon(
+          Icons.edit,
+          color: Colors.red,
+        ),
+        onTap: () {
+          setState(() {
+            _isEnabled = !_isEnabled;
+          });
+        },
+      ),
+      title: Text(widget.member.firstName),
+      children: <Widget>[
+        TextField(
+          enabled: _isEnabled,
+          decoration: InputDecoration(hintText: widget.member.firstName),
+        ),
+        TextField(
+          enabled: _isEnabled,
+          decoration: InputDecoration(hintText: widget.member.lastName),
+        ),
+        TextField(
+          enabled: _isEnabled,
+          decoration: InputDecoration(hintText: widget.member.email),
+        ),
+      ],
+      trailing: widget.member.isDeleting
           ? CircularProgressIndicator()
           : IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () => onDeletePressed(member.id),
+              onPressed: () => widget.onDeletePressed(widget.member.id),
             ),
     );
   }
