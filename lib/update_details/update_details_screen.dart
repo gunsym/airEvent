@@ -111,8 +111,8 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
       members: combinedMembers,
     );
 
-    print('familyV1');
-    print(familyV1);
+    //print('familyV1');
+    //print(familyV1);
     try {
       await membersRepository.addFamily(familyV1);
     } catch (e) {
@@ -120,10 +120,10 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
     }
 
     // With Serialization
-    final familyV2 = Family.fromJson(state.toJson());
-
-    print('familyV2');
-    print(familyV2);
+//    final familyV2 = Family.fromJson(state.toJson());
+//
+//    print('familyV2');
+//    print(familyV2);
 
     emitSuccess(
       canSubmitAgain: true,
