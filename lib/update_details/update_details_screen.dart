@@ -11,7 +11,12 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
   final MembersRepository membersRepository;
   StreamSubscription _familySubscription;
   Family myFamily;
-  final familyCode = TextFieldBloc(name: 'familyCode');
+  final familyCode = TextFieldBloc(
+    name: 'familyCode',
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
 
   final members = ListFieldBloc<MemberFieldBloc>(name: 'members');
 
@@ -45,7 +50,12 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
         throw Exception('Network request failed. Please try again later.');
       }
 
-      familyCode.updateInitialValue(myFamily.members[0].familyCode);
+      // TODO: consider re-writing
+      if (myFamily.members[0].familyCode == null) {
+        familyCode.updateInitialValue(myFamily.members[0].email);
+      } else {
+        familyCode.updateInitialValue(myFamily.members[0].familyCode);
+      }
 
       emitLoaded();
     } catch (e) {
