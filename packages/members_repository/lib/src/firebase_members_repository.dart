@@ -27,8 +27,8 @@ class FirebaseMembersRepository implements MembersRepository {
       familyCode: 'family',
       members: members,
     );
-    print('DELETE INDEX : '+ member.toString());
-    print('LIST OF MEMBERS : '+ members.toString());
+//    print('DELETE INDEX : '+ member.toString());
+//    print('LIST OF MEMBERS : '+ members.toString());
     //TODO: duplicate family, remove member and set data
     //return memberCollection.document(members[0].email).updateData({'simplycaddie': []});
     return memberCollection

@@ -26,9 +26,17 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       yield* _mapListUpdateToState(event);
     }
     if (event is Delete) {
-      yield* _mapDeleteListToState(event);
-      // final listState = state;
-      // if (listState is Loaded) {
+      //yield* _mapDeleteListToState(event);
+      final listState = state;
+      if (listState is Loaded) {
+        final List<Member> updatedMembers =
+            List<Member>.from(listState.members).map((Member member) {
+          return member == event.member
+              ? member.copyWith(isDeleting: true)
+              : member;
+        }).toList();
+        print(updatedMembers);
+      }
       //   final List<Item> updatedItems =
       //       List<Item>.from(listState.items).map((Item item) {
       //     return item.id == event.id ? item.copyWith(isDeleting: true) : item;
@@ -39,14 +47,14 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       //   });
       // }
     }
-    //if (event is Deleted) {
-    // final listState = state;
-    // if (listState is Loaded) {
-    //   final List<Item> updatedItems = List<Item>.from(listState.items)
-    //     ..removeWhere((item) => item.id == event.id);
-    //   yield Loaded(items: updatedItems);
-    // }
-    //}
+    if (event is Deleted) {
+      // final listState = state;
+      // if (listState is Loaded) {
+      //   final List<Item> updatedItems = List<Item>.from(listState.items)
+      //     ..removeWhere((item) => item.id == event.id);
+      //   yield Loaded(items: updatedItems);
+      // }
+    }
   }
 
   Stream<ListState> _mapLoadListToState() async* {
@@ -78,6 +86,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
 
   Stream<ListState> _mapDeleteListToState(Delete event) async* {
     membersRepository.removeMember(event.member, event.members);
+    add(Deleted(member: event.member));
   }
 
   @override

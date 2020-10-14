@@ -28,7 +28,7 @@ class Delete extends ListEvent {
 
 class Deleted extends ListEvent {
   //final String id;
-  final Member member;
+  final int member;
 
   //const Deleted({@required this.id});
   const Deleted({@required this.member});
