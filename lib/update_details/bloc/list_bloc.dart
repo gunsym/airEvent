@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:members_repository/members_repository.dart';
 import 'package:meta/meta.dart';
 
@@ -37,7 +38,11 @@ class ListBloc extends Bloc<ListEvent, ListState> {
         }).toList();
         print(updatedMembers);
         yield Loaded(members: updatedMembers);
-        //print(updatedMembers);
+        membersRepository
+            .removeMember(event.member, event.members)
+            .listen((member) {
+          add(Deleted(member: member));
+        });
       }
       //   final List<Item> updatedItems =
       //       List<Item>.from(listState.items).map((Item item) {
@@ -50,8 +55,12 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       // }
     }
     if (event is Deleted) {
-      // final listState = state;
-      // if (listState is Loaded) {
+      final listState = state;
+      if (listState is Loaded) {
+//        final List<Member> updatedMembers = List<Member>.from(listState.members)
+//          ..removeAt(event.member);
+        yield Loaded(members: listState.members);
+      }
       //   final List<Item> updatedItems = List<Item>.from(listState.items)
       //     ..removeWhere((item) => item.id == event.id);
       //   yield Loaded(items: updatedItems);

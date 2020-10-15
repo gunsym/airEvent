@@ -19,7 +19,7 @@ class FirebaseMembersRepository implements MembersRepository {
   }
 
   @override
-  Future<void> removeMember(int member, List<Member> members) async {
+  Stream<int> removeMember(int member, List<Member> members) async* {
     //var myMembers = List.from(members);
     members.removeAt(member);
     final myFamily = Family(
@@ -31,9 +31,10 @@ class FirebaseMembersRepository implements MembersRepository {
 //    print('LIST OF MEMBERS : '+ members.toString());
     //TODO: duplicate family, remove member and set data
     //return memberCollection.document(members[0].email).updateData({'simplycaddie': []});
-    return memberCollection
+    await memberCollection
         .document(members[0].email)
         .setData(myFamily.toEntity().toDocument());
+    yield member;
   }
 
   Future<void> addFamily(Family family) {
