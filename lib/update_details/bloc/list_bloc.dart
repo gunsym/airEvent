@@ -95,10 +95,10 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     yield Loaded(members: event.members);
   }
 
-  Stream<ListState> _mapDeleteListToState(Delete event) async* {
-    membersRepository.removeMember(event.member, event.members);
-    add(Deleted(member: event.member));
-  }
+//  Stream<ListState> _mapDeleteListToState(Delete event) async* {
+//    membersRepository.removeMember(event.member, event.members);
+//    add(Deleted(member: event.member));
+//  }
 
   @override
   Future<void> close() {
