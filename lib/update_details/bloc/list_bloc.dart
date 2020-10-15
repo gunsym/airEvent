@@ -31,11 +31,13 @@ class ListBloc extends Bloc<ListEvent, ListState> {
       if (listState is Loaded) {
         final List<Member> updatedMembers =
             List<Member>.from(listState.members).map((Member member) {
-          return member == event.member
+          return member == event.members[event.member]
               ? member.copyWith(isDeleting: true)
               : member;
         }).toList();
         print(updatedMembers);
+        yield Loaded(members: updatedMembers);
+        //print(updatedMembers);
       }
       //   final List<Item> updatedItems =
       //       List<Item>.from(listState.items).map((Item item) {
