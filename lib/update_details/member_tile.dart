@@ -13,7 +13,9 @@ class MemberTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return ListTile(
+      title: Text(member.firstName),
+      onTap: onTap,
+    );
   }
 }

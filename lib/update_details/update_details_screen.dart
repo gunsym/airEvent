@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:air_event/update_details/bloc/list_bloc.dart';
+import 'package:air_event/update_details/details_screen.dart';
+import 'package:air_event/update_details/member_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -264,14 +266,16 @@ class UpdateDetailsScreen extends StatelessWidget {
                                           child: Text('no content'),
                                         );
                                       }
+                                      final members = state.members;
                                       return ListView.builder(
                                         shrinkWrap: true,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         itemBuilder:
                                             (BuildContext context, int index) {
+                                          final member = members[index];
                                           return ItemTile(
-                                            member: state.members[index],
+                                            member: member,
                                             onDeletePressed: (member) {
                                               BlocProvider.of<ListBloc>(context)
                                                   .add(Delete(
@@ -279,7 +283,33 @@ class UpdateDetailsScreen extends StatelessWidget {
                                                 members: state.members,
                                               ));
                                             },
+                                            onTap: () async {
+                                              await Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (_) {
+                                                return DetailsScreen(
+                                                  index: index,
+                                                );
+                                              }));
+                                            },
                                           );
+//                                          return MemberTile(
+//                                            member: member,
+//                                            onTap: () async {
+//                                              final removedTodo =
+//                                                  await Navigator.of(context)
+//                                                      .push(
+//                                                MaterialPageRoute(builder: (_) {
+//                                                  return DetailsScreen(
+//                                                    index: index,
+//                                                  );
+////                                                  return DetailsScreen(
+////                                                      id: todo.id);
+//                                                }),
+//                                              );
+//                                              if (removedTodo != null) {}
+//                                            },
+//                                          );
                                         },
                                         itemCount: state.members.length,
                                       );
@@ -339,64 +369,91 @@ class UpdateDetailsScreen extends StatelessWidget {
   }
 }
 
-class ItemTile extends StatefulWidget {
-  //final Item item;
+class ItemTile extends StatelessWidget {
   final Member member;
   final Function(String) onDeletePressed;
+  final GestureTapCallback onTap;
 
   const ItemTile({
     Key key,
     @required this.member,
     @required this.onDeletePressed,
+    @required this.onTap,
   }) : super(key: key);
 
   @override
-  _ItemTileState createState() => _ItemTileState();
-}
-
-class _ItemTileState extends State<ItemTile> {
-  int memberIndex = 0;
-  bool _isEnabled = false;
-  @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      //leading: Text('#${member.id}'),
-      //leading: Text(widget.member.lastName),
-      leading: GestureDetector(
-        child: new Icon(
-          Icons.edit,
-          color: Colors.red,
-        ),
-        onTap: () {
-          setState(() {
-            _isEnabled = !_isEnabled;
-          });
-        },
-      ),
-      title: Text(widget.member.firstName),
-      children: <Widget>[
-        TextField(
-          enabled: _isEnabled,
-          decoration: InputDecoration(hintText: widget.member.firstName),
-        ),
-        TextField(
-          enabled: _isEnabled,
-          decoration: InputDecoration(hintText: widget.member.lastName),
-        ),
-        TextField(
-          enabled: _isEnabled,
-          decoration: InputDecoration(hintText: widget.member.email),
-        ),
-      ],
-      trailing: widget.member.isDeleting
+    return ListTile(
+      title: Text(member.firstName),
+      onTap: onTap,
+      trailing: member.isDeleting
           ? CircularProgressIndicator()
           : IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () => widget.onDeletePressed(widget.member.id),
+              onPressed: () => onDeletePressed(member.id),
             ),
     );
   }
 }
+
+//class ItemTile extends StatefulWidget {
+//  //final Item item;
+//  final Member member;
+//  final Function(String) onDeletePressed;
+//
+//  const ItemTile({
+//    Key key,
+//    @required this.member,
+//    @required this.onDeletePressed,
+//  }) : super(key: key);
+//
+//  @override
+//  _ItemTileState createState() => _ItemTileState();
+//}
+//
+//class _ItemTileState extends State<ItemTile> {
+//  int memberIndex = 0;
+//  bool _isEnabled = false;
+//  @override
+//  Widget build(BuildContext context) {
+//    return ExpansionTile(
+//      //leading: Text('#${member.id}'),
+//      //leading: Text(widget.member.lastName),
+//      leading: GestureDetector(
+//        child: new Icon(
+//          Icons.edit,
+//          color: Colors.red,
+//        ),
+//        onTap: () {
+//          setState(() {
+//            _isEnabled = !_isEnabled;
+//          });
+//        },
+//      ),
+//      title: Text(widget.member.firstName),
+//      children: <Widget>[
+//        TextField(
+//          enabled: _isEnabled,
+//          decoration: InputDecoration(hintText: widget.member.firstName),
+//        ),
+//        TextField(
+//          enabled: _isEnabled,
+//          decoration: InputDecoration(hintText: widget.member.lastName),
+//        ),
+//        TextField(
+//          enabled: _isEnabled,
+//          decoration: InputDecoration(hintText: widget.member.email),
+//        ),
+//      ],
+//      trailing: widget.member.isDeleting
+//          ? CircularProgressIndicator()
+//          : IconButton(
+//              icon: Icon(Icons.delete, color: Colors.red),
+//              onPressed: () => widget.onDeletePressed(widget.member.id),
+//            ),
+//    );
+//  }
+//}
 
 class MemberCard extends StatelessWidget {
   final int memberIndex;
