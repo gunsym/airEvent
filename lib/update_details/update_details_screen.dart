@@ -274,7 +274,7 @@ class UpdateDetailsScreen extends StatelessWidget {
                                         itemBuilder:
                                             (BuildContext context, int index) {
                                           final member = members[index];
-                                          return ItemTile(
+                                          return MemberTile(
                                             member: member,
                                             onDeletePressed: (member) {
                                               BlocProvider.of<ListBloc>(context)
@@ -285,12 +285,12 @@ class UpdateDetailsScreen extends StatelessWidget {
                                             },
                                             onTap: () async {
                                               await Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (_) {
-                                                return DetailsScreen(
-                                                  index: index,
-                                                );
-                                              }));
+                                                MaterialPageRoute(builder: (_) {
+                                                  return DetailsScreen(
+                                                    index: index,
+                                                  );
+                                                }),
+                                              );
                                             },
                                           );
 //                                          return MemberTile(
@@ -368,92 +368,6 @@ class UpdateDetailsScreen extends StatelessWidget {
     );
   }
 }
-
-class ItemTile extends StatelessWidget {
-  final Member member;
-  final Function(String) onDeletePressed;
-  final GestureTapCallback onTap;
-
-  const ItemTile({
-    Key key,
-    @required this.member,
-    @required this.onDeletePressed,
-    @required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(member.firstName),
-      onTap: onTap,
-      trailing: member.isDeleting
-          ? CircularProgressIndicator()
-          : IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () => onDeletePressed(member.id),
-            ),
-    );
-  }
-}
-
-//class ItemTile extends StatefulWidget {
-//  //final Item item;
-//  final Member member;
-//  final Function(String) onDeletePressed;
-//
-//  const ItemTile({
-//    Key key,
-//    @required this.member,
-//    @required this.onDeletePressed,
-//  }) : super(key: key);
-//
-//  @override
-//  _ItemTileState createState() => _ItemTileState();
-//}
-//
-//class _ItemTileState extends State<ItemTile> {
-//  int memberIndex = 0;
-//  bool _isEnabled = false;
-//  @override
-//  Widget build(BuildContext context) {
-//    return ExpansionTile(
-//      //leading: Text('#${member.id}'),
-//      //leading: Text(widget.member.lastName),
-//      leading: GestureDetector(
-//        child: new Icon(
-//          Icons.edit,
-//          color: Colors.red,
-//        ),
-//        onTap: () {
-//          setState(() {
-//            _isEnabled = !_isEnabled;
-//          });
-//        },
-//      ),
-//      title: Text(widget.member.firstName),
-//      children: <Widget>[
-//        TextField(
-//          enabled: _isEnabled,
-//          decoration: InputDecoration(hintText: widget.member.firstName),
-//        ),
-//        TextField(
-//          enabled: _isEnabled,
-//          decoration: InputDecoration(hintText: widget.member.lastName),
-//        ),
-//        TextField(
-//          enabled: _isEnabled,
-//          decoration: InputDecoration(hintText: widget.member.email),
-//        ),
-//      ],
-//      trailing: widget.member.isDeleting
-//          ? CircularProgressIndicator()
-//          : IconButton(
-//              icon: Icon(Icons.delete, color: Colors.red),
-//              onPressed: () => widget.onDeletePressed(widget.member.id),
-//            ),
-//    );
-//  }
-//}
 
 class MemberCard extends StatelessWidget {
   final int memberIndex;
