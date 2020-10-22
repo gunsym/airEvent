@@ -20,7 +20,7 @@ class DetailsScreen extends StatelessWidget {
             title: Text('Member Details'),
           ),
           body: member == null
-              ? Container()
+              ? Container() //: LoginForm(),
               : AllFieldsForm(
                   member: member,
                 ),
@@ -47,9 +47,14 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
 
   @override
   void onLoading() async {
-    firstName.updateInitialValue(member.firstName);
-    lastName.updateInitialValue(member.lastName);
-    email.updateInitialValue(member.email);
+    try {
+      firstName.updateInitialValue(member.firstName);
+      lastName.updateInitialValue(member.lastName);
+      email.updateInitialValue(member.email);
+      emitLoaded();
+    } catch (e) {
+      emitLoadFailed();
+    }
   }
 
   @override
@@ -75,7 +80,8 @@ class AllFieldsForm extends StatelessWidget {
       create: (context) => AllFieldsFormBloc(member: member),
       child: Builder(
         builder: (context) {
-          final formBloc = BlocProvider.of<AllFieldsFormBloc>(context);
+          //final formBloc = BlocProvider.of<AllFieldsFormBloc>(context);
+          final formBloc = context.bloc<AllFieldsFormBloc>();
 
           return Theme(
             data: Theme.of(context).copyWith(
@@ -93,8 +99,9 @@ class AllFieldsForm extends StatelessWidget {
                 onSuccess: (context, state) {
                   LoadingDialog.hide(context);
 
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (_) => SuccessScreen(member: member)));
+//                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+//                      builder: (_) => SuccessScreen(member: member)));
+                  Navigator.pop(context);
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
@@ -128,6 +135,11 @@ class AllFieldsForm extends StatelessWidget {
                             labelText: 'Email',
                             prefixIcon: Icon(Icons.email),
                           ),
+                        ),
+                        RaisedButton(
+                          color: Colors.red[200],
+                          onPressed: formBloc.submit,
+                          child: Text('Save'),
                         ),
                       ],
                     ),
