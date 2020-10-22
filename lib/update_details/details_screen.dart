@@ -16,48 +16,15 @@ class DetailsScreen extends StatelessWidget {
         final members = (state as Loaded).members;
         final member = members.elementAt(index);
         return Scaffold(
-            appBar: AppBar(
-              title: Text('Member Details'),
-            ),
-            body: member == null
-                ? Container()
-                : AllFieldsForm(
-                    member: member,
-                  )
-            // Padding(
-            //         padding: EdgeInsets.all(16.0),
-            //         child: ListView(
-            //           children: [
-            //             Row(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               children: [
-            //                 Expanded(
-            //                   child: Column(
-            //                     crossAxisAlignment: CrossAxisAlignment.start,
-            //                     children: [
-            //                       Hero(
-            //                         tag: '${member.id}__heroTag',
-            //                         child: Container(
-            //                           width: MediaQuery.of(context).size.width,
-            //                           padding: EdgeInsets.only(
-            //                             top: 8.0,
-            //                             bottom: 16.0,
-            //                           ),
-            //                           child: Text(member.firstName),
-            //                         ),
-            //                       ),
-            //                       Text(member.lastName),
-            //                       Text(member.email),
-            //                       Text(member.specialNeeds.toString()),
-            //                     ],
-            //                   ),
-            //                 )
-            //               ],
-            //             )
-            //           ],
-            //         ),
-            //       ),
-            );
+          appBar: AppBar(
+            title: Text('Member Details'),
+          ),
+          body: member == null
+              ? Container()
+              : AllFieldsForm(
+                  member: member,
+                ),
+        );
       },
     );
   }
@@ -126,8 +93,8 @@ class AllFieldsForm extends StatelessWidget {
                 onSuccess: (context, state) {
                   LoadingDialog.hide(context);
 
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => SuccessScreen()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (_) => SuccessScreen(member: member)));
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
@@ -206,7 +173,9 @@ class LoadingDialog extends StatelessWidget {
 }
 
 class SuccessScreen extends StatelessWidget {
-  SuccessScreen({Key key}) : super(key: key);
+  final Member member;
+
+  SuccessScreen({Key key, @required this.member}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -224,8 +193,11 @@ class SuccessScreen extends StatelessWidget {
             ),
             SizedBox(height: 10),
             RaisedButton.icon(
-              onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => AllFieldsForm())),
+              onPressed: () =>
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (_) => AllFieldsForm(
+                            member: member,
+                          ))),
               icon: Icon(Icons.replay),
               label: Text('AGAIN'),
             ),
