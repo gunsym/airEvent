@@ -287,7 +287,9 @@ class UpdateDetailsScreen extends StatelessWidget {
                                               await Navigator.of(context).push(
                                                 MaterialPageRoute(builder: (_) {
                                                   return DetailsScreen(
-                                                    index: index,
+                                                    member: index,
+                                                    membersRepository:
+                                                        membersRepository,
                                                   );
                                                 }),
                                               );

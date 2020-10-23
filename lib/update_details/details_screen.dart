@@ -5,24 +5,29 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:members_repository/members_repository.dart';
 
 class DetailsScreen extends StatelessWidget {
-  final int index;
+  final int member;
+  final MembersRepository membersRepository;
 
-  DetailsScreen({Key key, @required this.index}) : super(key: key);
+  DetailsScreen(
+      {Key key, @required this.member, @required this.membersRepository})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ListBloc, ListState>(
       builder: (context, state) {
         final members = (state as Loaded).members;
-        final member = members.elementAt(index);
+        //final member = members.elementAt(index);
         return Scaffold(
           appBar: AppBar(
             title: Text('Member Details'),
           ),
-          body: member == null
+          body: members.elementAt(member) == null
               ? Container() //: LoginForm(),
               : AllFieldsForm(
                   member: member,
+                  members: members,
+                  membersRepository: membersRepository,
                 ),
         );
       },
@@ -35,9 +40,15 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   final lastName = TextFieldBloc(validators: [FieldBlocValidators.required]);
   final email = TextFieldBloc(
       validators: [FieldBlocValidators.required, FieldBlocValidators.email]);
-  final Member member;
+  final int member;
+  final List<Member> members;
+  final MembersRepository membersRepository;
 
-  AllFieldsFormBloc({@required this.member}) : super(isLoading: true) {
+  AllFieldsFormBloc(
+      {@required this.member,
+      @required this.members,
+      @required this.membersRepository})
+      : super(isLoading: true) {
     addFieldBlocs(fieldBlocs: [
       firstName,
       lastName,
@@ -48,9 +59,10 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   @override
   void onLoading() async {
     try {
-      firstName.updateInitialValue(member.firstName);
-      lastName.updateInitialValue(member.lastName);
-      email.updateInitialValue(member.email);
+      var selectedMember = members[member];
+      firstName.updateInitialValue(selectedMember.firstName);
+      lastName.updateInitialValue(selectedMember.lastName);
+      email.updateInitialValue(selectedMember.email);
       emitLoaded();
     } catch (e) {
       emitLoadFailed();
@@ -59,8 +71,25 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
+    var existingMembers = members.toList();
+    var editedMember = Member(
+      email: email.value,
+      firstName: firstName.value,
+      lastName: lastName.value,
+      specialNeeds: [],
+      familyCode: email.value,
+    );
+    existingMembers[member] = editedMember;
+
+    final familyV1 = Family(
+      /// use registration type [family / individual]
+      familyCode: 'family',
+      members: existingMembers,
+    );
+    print(familyV1.toString());
     try {
-      await Future<void>.delayed(Duration(milliseconds: 500));
+      //Todo: add member repository
+      await membersRepository.addFamily(familyV1);
 
       emitSuccess(canSubmitAgain: true);
     } catch (e) {
@@ -70,14 +99,22 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
 }
 
 class AllFieldsForm extends StatelessWidget {
-  final Member member;
+  final int member;
+  final List<Member> members;
+  final MembersRepository membersRepository;
 
-  AllFieldsForm({@required this.member});
+  AllFieldsForm(
+      {@required this.member,
+      @required this.members,
+      @required this.membersRepository});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AllFieldsFormBloc(member: member),
+      create: (context) => AllFieldsFormBloc(
+          member: member,
+          members: members,
+          membersRepository: membersRepository),
       child: Builder(
         builder: (context) {
           //final formBloc = BlocProvider.of<AllFieldsFormBloc>(context);
@@ -184,38 +221,38 @@ class LoadingDialog extends StatelessWidget {
   }
 }
 
-class SuccessScreen extends StatelessWidget {
-  final Member member;
-
-  SuccessScreen({Key key, @required this.member}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.tag_faces, size: 100),
-            SizedBox(height: 10),
-            Text(
-              'Success',
-              style: TextStyle(fontSize: 54, color: Colors.black),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 10),
-            RaisedButton.icon(
-              onPressed: () =>
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (_) => AllFieldsForm(
-                            member: member,
-                          ))),
-              icon: Icon(Icons.replay),
-              label: Text('AGAIN'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//class SuccessScreen extends StatelessWidget {
+//  final Member member;
+//
+//  SuccessScreen({Key key, @required this.member}) : super(key: key);
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Scaffold(
+//      body: Center(
+//        child: Column(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          children: <Widget>[
+//            Icon(Icons.tag_faces, size: 100),
+//            SizedBox(height: 10),
+//            Text(
+//              'Success',
+//              style: TextStyle(fontSize: 54, color: Colors.black),
+//              textAlign: TextAlign.center,
+//            ),
+//            SizedBox(height: 10),
+//            RaisedButton.icon(
+//              onPressed: () =>
+//                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+//                      builder: (_) => AllFieldsForm(
+//                            member: member,
+//                          ))),
+//              icon: Icon(Icons.replay),
+//              label: Text('AGAIN'),
+//            ),
+//          ],
+//        ),
+//      ),
+//    );
+//  }
+//}
