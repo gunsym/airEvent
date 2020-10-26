@@ -71,7 +71,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
-    var existingMembers = members.toList();
+    var memberList = members.toList();
     var editedMember = Member(
       email: email.value,
       firstName: firstName.value,
@@ -79,18 +79,16 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       specialNeeds: [],
       familyCode: email.value,
     );
-    existingMembers[member] = editedMember;
+    memberList[member] = editedMember;
 
     final familyV1 = Family(
       /// use registration type [family / individual]
       familyCode: 'family',
-      members: existingMembers,
+      members: memberList,
     );
     print(familyV1.toString());
     try {
-      //Todo: add member repository
       await membersRepository.addFamily(familyV1);
-
       emitSuccess(canSubmitAgain: true);
     } catch (e) {
       emitFailure();
