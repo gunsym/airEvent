@@ -40,6 +40,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   final lastName = TextFieldBloc(validators: [FieldBlocValidators.required]);
   final email = TextFieldBloc(
       validators: [FieldBlocValidators.required, FieldBlocValidators.email]);
+  final specialNeeds = ListFieldBloc();
   final int member;
   final List<Member> members;
   final MembersRepository membersRepository;
@@ -53,6 +54,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       firstName,
       lastName,
       email,
+      specialNeeds,
     ]);
   }
 
@@ -170,6 +172,13 @@ class AllFieldsForm extends StatelessWidget {
                             labelText: 'Email',
                             prefixIcon: Icon(Icons.email),
                           ),
+                        ),
+                        BlocBuilder<ListFieldBloc<TextFieldBloc>,
+                            ListFieldBlocState<TextFieldBloc>>(
+                          cubit: formBloc.specialNeeds,
+                          builder: (context, state) {
+                            return null;
+                          },
                         ),
                         RaisedButton(
                           color: Colors.red[200],
