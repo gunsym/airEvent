@@ -82,11 +82,13 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
 
   void addSpecialNeedsToMember(int memberIndex) {
     members.value[memberIndex].specialNeeds.addFieldBloc(TextFieldBloc());
+    //members.value[memberIndex].specialNeeds.value[0].updateInitialValue('hi');
   }
 
   void removeSpecialNeedsFromMember(
-      {@required int memberIndex, @required int hobbyIndex}) {
-    members.value[memberIndex].specialNeeds.removeFieldBlocAt(hobbyIndex);
+      {@required int memberIndex, @required int specialNeedsIndex}) {
+    members.value[memberIndex].specialNeeds
+        .removeFieldBlocAt(specialNeedsIndex);
   }
 
   @override

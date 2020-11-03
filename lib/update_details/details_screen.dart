@@ -35,12 +35,21 @@ class DetailsScreen extends StatelessWidget {
   }
 }
 
+class SpecialNeedsFieldBloc extends GroupFieldBloc {
+  final ListFieldBloc<TextFieldBloc> specialNeeds;
+
+  SpecialNeedsFieldBloc({@required this.specialNeeds, String name})
+      : super([specialNeeds], name: name);
+}
+
 class AllFieldsFormBloc extends FormBloc<String, String> {
   final firstName = TextFieldBloc(validators: [FieldBlocValidators.required]);
   final lastName = TextFieldBloc(validators: [FieldBlocValidators.required]);
   final email = TextFieldBloc(
       validators: [FieldBlocValidators.required, FieldBlocValidators.email]);
-  final specialNeeds1 = TextFieldBloc();
+  //final specialNeeds1 = TextFieldBloc();
+  final specialNeeds =
+      ListFieldBloc<SpecialNeedsFieldBloc>(name: 'specialNeeds');
   final int member;
   final List<Member> members;
   final MembersRepository membersRepository;
@@ -54,7 +63,7 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       firstName,
       lastName,
       email,
-      specialNeeds1,
+      specialNeeds,
     ]);
   }
 
@@ -65,7 +74,10 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       firstName.updateInitialValue(selectedMember.firstName);
       lastName.updateInitialValue(selectedMember.lastName);
       email.updateInitialValue(selectedMember.email);
-      specialNeeds1.updateInitialValue(selectedMember.specialNeeds[0]);
+      specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
+      specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
+      specialNeeds.value[0].specialNeeds.value[0].updateInitialValue('hi');
+      specialNeeds.value[0].specialNeeds.value[1].updateInitialValue('hihi');
       emitLoaded();
     } catch (e) {
       emitLoadFailed();
@@ -174,13 +186,53 @@ class AllFieldsForm extends StatelessWidget {
                             prefixIcon: Icon(Icons.email),
                           ),
                         ),
-                        TextFieldBlocBuilder(
-                          textFieldBloc: formBloc.specialNeeds1,
-                          decoration: InputDecoration(
-                            labelText: 'Special Needs',
-                            prefixIcon: Icon(Icons.text_fields),
-                          ),
+                        BlocBuilder<ListFieldBloc<SpecialNeedsFieldBloc>,
+                            ListFieldBlocState<SpecialNeedsFieldBloc>>(
+                          cubit: formBloc.specialNeeds,
+                          builder: (context, state) {
+                            if (state.fieldBlocs.isNotEmpty) {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: state.fieldBlocs.length,
+                                itemBuilder: (context, i) {
+                                  return SpecialNeedsCard(
+                                    specialNeedsIndex: i,
+                                    specialNeedsField: state.fieldBlocs[i],
+                                  );
+                                },
+                              );
+                            }
+                            return Container(
+                              child: Text('No data'),
+                            );
+                          },
                         ),
+//                        ListView.builder(
+//                            shrinkWrap: true,
+//                            physics: NeverScrollableScrollPhysics(),
+//                            itemCount: 2,
+//                            itemBuilder: (context, i) {
+//                              return Card(
+//                                color: Colors.blue[50],
+//                                child: Row(
+//                                  children: <Widget>[
+//                                    Expanded(
+//                                      child: TextFieldBlocBuilder(
+//                                        textFieldBloc: formBloc.specialNeeds
+//                                            .value[0].specialNeeds.value[0],
+//                                        decoration: InputDecoration(
+//                                          labelText: 'Special Needs #${i + 1}',
+//                                        ),
+//                                      ),
+//                                    ),
+//                                    IconButton(
+//                                        icon: Icon(Icons.delete),
+//                                        onPressed: () {}),
+//                                  ],
+//                                ),
+//                              );
+//                            }),
                         RaisedButton(
                           color: Colors.red[200],
                           onPressed: formBloc.submit,
@@ -194,6 +246,62 @@ class AllFieldsForm extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class SpecialNeedsCard extends StatelessWidget {
+  final int specialNeedsIndex;
+  final SpecialNeedsFieldBloc specialNeedsField;
+
+  const SpecialNeedsCard({
+    Key key,
+    @required this.specialNeedsIndex,
+    @required this.specialNeedsField,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: <Widget>[
+            BlocBuilder<ListFieldBloc<TextFieldBloc>,
+                ListFieldBlocState<TextFieldBloc>>(
+              cubit: specialNeedsField.specialNeeds,
+              builder: (context, state) {
+                if (state.fieldBlocs.isNotEmpty) {
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: state.fieldBlocs.length,
+                      itemBuilder: (context, i) {
+                        return Card(
+                          color: Colors.blue[50],
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: TextFieldBlocBuilder(
+                                  textFieldBloc: state.fieldBlocs[i],
+                                  decoration: InputDecoration(
+                                    labelText: 'Special Needs #${i + 1}',
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.delete), onPressed: () {}),
+                            ],
+                          ),
+                        );
+                      });
+                }
+                return Container();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
