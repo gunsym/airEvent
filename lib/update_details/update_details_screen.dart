@@ -327,6 +327,7 @@ class UpdateDetailsScreen extends StatelessWidget {
                                     ListFieldBlocState<MemberFieldBloc>>(
                                   cubit: formBloc.members,
                                   builder: (context, state) {
+                                    print(state.fieldBlocs);
                                     if (state.fieldBlocs.isNotEmpty) {
                                       return ListView.builder(
                                         shrinkWrap: true,

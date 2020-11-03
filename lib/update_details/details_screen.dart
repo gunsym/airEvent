@@ -74,6 +74,9 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       firstName.updateInitialValue(selectedMember.firstName);
       lastName.updateInitialValue(selectedMember.lastName);
       email.updateInitialValue(selectedMember.email);
+      specialNeeds.addFieldBloc(SpecialNeedsFieldBloc(
+          specialNeeds: ListFieldBloc(name: 'specialNeeds')));
+
       specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
       specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
       specialNeeds.value[0].specialNeeds.value[0].updateInitialValue('hi');
@@ -190,6 +193,7 @@ class AllFieldsForm extends StatelessWidget {
                             ListFieldBlocState<SpecialNeedsFieldBloc>>(
                           cubit: formBloc.specialNeeds,
                           builder: (context, state) {
+                            print(state.fieldBlocs);
                             if (state.fieldBlocs.isNotEmpty) {
                               return ListView.builder(
                                 shrinkWrap: true,
@@ -198,7 +202,7 @@ class AllFieldsForm extends StatelessWidget {
                                 itemBuilder: (context, i) {
                                   return SpecialNeedsCard(
                                     specialNeedsIndex: i,
-                                    specialNeedsField: state.fieldBlocs[i],
+                                    specialNeedsField: state.fieldBlocs[0],
                                   );
                                 },
                               );
