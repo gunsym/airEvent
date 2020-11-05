@@ -48,10 +48,17 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   final email = TextFieldBloc(
       validators: [FieldBlocValidators.required, FieldBlocValidators.email]);
   //final specialNeeds1 = TextFieldBloc();
-  final specialNeeds =
-      ListFieldBloc<SpecialNeedsFieldBloc>(name: 'specialNeeds');
+//  final specialNeeds =
+//      ListFieldBloc<SpecialNeedsFieldBloc>(name: 'specialNeeds');
+  //List list = [];
+  //for(var i=0;i<10;i++){
+
+  //}
   final int member;
   final List<Member> members;
+  final specialNeeds = ListFieldBloc<TextFieldBloc>(
+      name: 'specialNeeds',
+      fieldBlocs: List.generate(4, (index) => TextFieldBloc()));
   final MembersRepository membersRepository;
 
   AllFieldsFormBloc(
@@ -74,13 +81,16 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       firstName.updateInitialValue(selectedMember.firstName);
       lastName.updateInitialValue(selectedMember.lastName);
       email.updateInitialValue(selectedMember.email);
-      specialNeeds.addFieldBloc(SpecialNeedsFieldBloc(
-          specialNeeds: ListFieldBloc(name: 'specialNeeds')));
-
-      specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
-      specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
-      specialNeeds.value[0].specialNeeds.value[0].updateInitialValue('hi');
-      specialNeeds.value[0].specialNeeds.value[1].updateInitialValue('hihi');
+      //specialNeeds.addFieldBloc(TextFieldBloc());
+      specialNeeds.value[0].updateInitialValue(selectedMember.specialNeeds[0]);
+      specialNeeds.value[1].updateInitialValue(selectedMember.specialNeeds[1]);
+//      specialNeeds.addFieldBloc(SpecialNeedsFieldBloc(
+//          specialNeeds: ListFieldBloc(name: 'specialNeeds')));
+//
+//      specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
+//      specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
+//      specialNeeds.value[0].specialNeeds.value[0].updateInitialValue('hi');
+//      specialNeeds.value[0].specialNeeds.value[1].updateInitialValue('hihi');
       emitLoaded();
     } catch (e) {
       emitLoadFailed();
@@ -189,29 +199,70 @@ class AllFieldsForm extends StatelessWidget {
                             prefixIcon: Icon(Icons.email),
                           ),
                         ),
-                        BlocBuilder<ListFieldBloc<SpecialNeedsFieldBloc>,
-                            ListFieldBlocState<SpecialNeedsFieldBloc>>(
+                        BlocBuilder<ListFieldBloc<TextFieldBloc>,
+                            ListFieldBlocState<TextFieldBloc>>(
                           cubit: formBloc.specialNeeds,
                           builder: (context, state) {
-                            print(state.fieldBlocs);
                             if (state.fieldBlocs.isNotEmpty) {
                               return ListView.builder(
                                 shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
+                                physics: NeverScrollableScrollPhysics(),
                                 itemCount: state.fieldBlocs.length,
                                 itemBuilder: (context, i) {
-                                  return SpecialNeedsCard(
-                                    specialNeedsIndex: i,
-                                    specialNeedsField: state.fieldBlocs[0],
+                                  //ignore: close_sinks
+                                  final specialNeedsFieldBloc =
+                                      state.fieldBlocs[i];
+                                  return Card(
+                                    color: Colors.blue[50],
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: TextFieldBlocBuilder(
+                                            textFieldBloc:
+                                                specialNeedsFieldBloc,
+                                            decoration: InputDecoration(
+                                              labelText:
+                                                  'Special Needs #${i + 1}',
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () => formBloc.specialNeeds
+                                              .removeFieldBlocAt(i),
+                                        ),
+                                      ],
+                                    ),
                                   );
                                 },
                               );
                             }
-                            return Container(
-                              child: Text('No data'),
-                            );
+                            return Container();
                           },
                         ),
+//                        BlocBuilder<ListFieldBloc<SpecialNeedsFieldBloc>,
+//                            ListFieldBlocState<SpecialNeedsFieldBloc>>(
+//                          cubit: formBloc.specialNeeds,
+//                          builder: (context, state) {
+//                            print(state.fieldBlocs);
+//                            if (state.fieldBlocs.isNotEmpty) {
+//                              return ListView.builder(
+//                                shrinkWrap: true,
+//                                physics: const NeverScrollableScrollPhysics(),
+//                                itemCount: state.fieldBlocs.length,
+//                                itemBuilder: (context, i) {
+//                                  return SpecialNeedsCard(
+//                                    specialNeedsIndex: i,
+//                                    specialNeedsField: state.fieldBlocs[0],
+//                                  );
+//                                },
+//                              );
+//                            }
+//                            return Container(
+//                              child: Text('No data'),
+//                            );
+//                          },
+//                        ),
 //                        ListView.builder(
 //                            shrinkWrap: true,
 //                            physics: NeverScrollableScrollPhysics(),
