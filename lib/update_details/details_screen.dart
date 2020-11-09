@@ -58,7 +58,8 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
   final List<Member> members;
   final specialNeeds = ListFieldBloc<TextFieldBloc>(
       name: 'specialNeeds',
-      fieldBlocs: List.generate(4, (index) => TextFieldBloc()));
+      // hardcoded value, need to fix
+      fieldBlocs: List.generate(30, (index) => TextFieldBloc()));
   final MembersRepository membersRepository;
 
   AllFieldsFormBloc(
@@ -82,19 +83,25 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       lastName.updateInitialValue(selectedMember.lastName);
       email.updateInitialValue(selectedMember.email);
       //specialNeeds.addFieldBloc(TextFieldBloc());
-      specialNeeds.value[0].updateInitialValue(selectedMember.specialNeeds[0]);
-      specialNeeds.value[1].updateInitialValue(selectedMember.specialNeeds[1]);
-//      specialNeeds.addFieldBloc(SpecialNeedsFieldBloc(
-//          specialNeeds: ListFieldBloc(name: 'specialNeeds')));
-//
-//      specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
-//      specialNeeds.value[0].specialNeeds.addFieldBloc(TextFieldBloc());
-//      specialNeeds.value[0].specialNeeds.value[0].updateInitialValue('hi');
-//      specialNeeds.value[0].specialNeeds.value[1].updateInitialValue('hihi');
+      var last = 0;
+      for (var i = 0; i < selectedMember.specialNeeds.length; i++) {
+        specialNeeds.value[i]
+            .updateInitialValue(selectedMember.specialNeeds[i]);
+        last++;
+      }
+
+      /// need to fix hardcoded value
+      for (var i = 30 - 1; i >= last; i--) {
+        specialNeeds.removeFieldBlocAt(i);
+      }
       emitLoaded();
     } catch (e) {
       emitLoadFailed();
     }
+  }
+
+  void addSpecialNeeds() {
+    specialNeeds.addFieldBloc(TextFieldBloc());
   }
 
   @override
@@ -104,7 +111,9 @@ class AllFieldsFormBloc extends FormBloc<String, String> {
       email: email.value,
       firstName: firstName.value,
       lastName: lastName.value,
-      specialNeeds: [],
+      specialNeeds: specialNeeds.value
+          .map((specialNeedsField) => specialNeedsField.value)
+          .toList(),
       familyCode: email.value,
     );
     memberList[member] = editedMember;
@@ -288,6 +297,11 @@ class AllFieldsForm extends StatelessWidget {
 //                                ),
 //                              );
 //                            }),
+                        RaisedButton(
+                          color: Colors.blue[100],
+                          onPressed: formBloc.addSpecialNeeds,
+                          child: Text('ADD SPECIAL NEEDS'),
+                        ),
                         RaisedButton(
                           color: Colors.red[200],
                           onPressed: formBloc.submit,
