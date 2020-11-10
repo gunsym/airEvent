@@ -27,21 +27,25 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     }
     if (event is Delete) {
       //yield* _mapDeleteListToState(event);
-      final listState = state;
-      if (listState is Loaded) {
-        final List<Member> updatedMembers =
-            List<Member>.from(listState.members).map((Member member) {
-          return member == event.members[event.member]
-              ? member.copyWith(isDeleting: true)
-              : member;
-        }).toList();
-        print(updatedMembers);
-        yield Loaded(members: updatedMembers);
-        membersRepository
-            .removeMember(event.member, event.members)
-            .listen((member) {
-          add(Deleted(member: member));
-        });
+      /// not allowed to delete last member
+      /// todo: write event
+      if (event.member != 0) {
+        final listState = state;
+        if (listState is Loaded) {
+          final List<Member> updatedMembers =
+              List<Member>.from(listState.members).map((Member member) {
+            return member == event.members[event.member]
+                ? member.copyWith(isDeleting: true)
+                : member;
+          }).toList();
+          print(updatedMembers);
+          yield Loaded(members: updatedMembers);
+          membersRepository
+              .removeMember(event.member, event.members)
+              .listen((member) {
+            add(Deleted(member: member));
+          });
+        }
       }
       //   final List<Item> updatedItems =
       //       List<Item>.from(listState.items).map((Item item) {
