@@ -11,7 +11,6 @@ import 'package:members_repository/members_repository.dart';
 class UpdateDetailsBloc extends FormBloc<String, String> {
   final String email;
   final MembersRepository membersRepository;
-  StreamSubscription _familySubscription;
   Family myFamily;
   final familyCode = TextFieldBloc(
     name: 'familyCode',
