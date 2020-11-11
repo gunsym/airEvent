@@ -167,7 +167,7 @@ class UpdateDetailsScreen extends StatelessWidget {
       child: Builder(
         builder: (context) {
           //ignore: close_sinks
-          final formBloc = context.bloc<UpdateDetailsBloc>();
+          final formBloc = context.watch<UpdateDetailsBloc>();
           final bottom = MediaQuery.of(context).viewInsets.bottom;
 
           return Theme(

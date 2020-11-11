@@ -41,7 +41,7 @@ class _EmailInput extends StatelessWidget {
       builder: (context, state) {
         return TextField(
           key: const Key('signUpForm_emailInput_textField'),
-          onChanged: (email) => context.bloc<SignUpCubit>().emailChanged(email),
+          onChanged: (email) => context.read<SignUpCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
             labelText: 'email',
@@ -63,7 +63,7 @@ class _PasswordInput extends StatelessWidget {
         return TextField(
           key: const Key('signUpForm_passwordInput_textField'),
           onChanged: (password) =>
-              context.bloc<SignUpCubit>().passwordChanged(password),
+              context.read<SignUpCubit>().passwordChanged(password),
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'password',
@@ -92,7 +92,7 @@ class _SignUpButton extends StatelessWidget {
                 ),
                 color: Colors.orangeAccent,
                 onPressed: state.status.isValidated
-                    ? () => context.bloc<SignUpCubit>().signUpFormSubmitted()
+                    ? () => context.read<SignUpCubit>().signUpFormSubmitted()
                     : null,
               );
       },

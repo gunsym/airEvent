@@ -153,7 +153,7 @@ class AllFieldsForm extends StatelessWidget {
       child: Builder(
         builder: (context) {
           //final formBloc = BlocProvider.of<AllFieldsFormBloc>(context);
-          final formBloc = context.bloc<AllFieldsFormBloc>();
+          final formBloc = context.watch<AllFieldsFormBloc>();
 
           return Theme(
             data: Theme.of(context).copyWith(
