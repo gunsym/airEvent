@@ -25,46 +25,13 @@ class UpdateDetailsBloc extends FormBloc<String, String> {
   UpdateDetailsBloc({
     @required this.email,
     @required this.membersRepository,
-  })  : assert(email != null, membersRepository != null),
-        super(isLoading: true) {
+  }) : assert(email != null, membersRepository != null) {
     addFieldBlocs(
       fieldBlocs: [
         familyCode,
         members,
       ],
     );
-  }
-
-  var _throwException = true;
-
-  @override
-  void onLoading() async {
-    try {
-      //await Future<void>.delayed(Duration(milliseconds: 1500));
-      _familySubscription?.cancel();
-      _familySubscription = membersRepository.family(email).listen((family) {
-        //print(family);
-        myFamily = family;
-      });
-
-      if (_throwException) {
-        // Simulate network error
-        throw Exception('Network request failed. Please try again later.');
-      }
-
-      // TODO: consider re-writing
-      if (myFamily.members[0].familyCode == null) {
-        familyCode.updateInitialValue(myFamily.members[0].email);
-      } else {
-        familyCode.updateInitialValue(myFamily.members[0].familyCode);
-      }
-
-      emitLoaded();
-    } catch (e) {
-      _throwException = false;
-
-      emitLoadFailed();
-    }
   }
 
   void addMember() {
