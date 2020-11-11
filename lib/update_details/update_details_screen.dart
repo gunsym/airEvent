@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:air_event/update_details/bloc/list_bloc.dart';
 import 'package:air_event/update_details/details_screen.dart';
