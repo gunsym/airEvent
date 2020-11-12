@@ -19,7 +19,7 @@ class Loaded extends ListState {
   List<Object> get props => [members];
 
   @override
-  String toString() => 'Loaded { items: ${members.length} }';
+  String toString() => 'Loaded { members: ${members.length} }';
 }
 
 class Failure extends ListState {}

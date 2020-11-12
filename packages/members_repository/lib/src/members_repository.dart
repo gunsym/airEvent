@@ -15,6 +15,8 @@ abstract class MembersRepository {
 
   Stream<Family> family(String id);
 
+  Stream<EventGroup> eventGroup(String id);
+
   /// Return all families
   /// useful later
   Stream<List<Family>> families();

@@ -10,6 +10,7 @@ import 'package:members_repository/src/entities/entities.dart';
 
 class FirebaseMembersRepository implements MembersRepository {
   final memberCollection = Firestore.instance.collection('members');
+  final eventCollection = Firestore.instance.collection('events');
 
   @override
   Future<void> addMember(Member member) {
@@ -46,6 +47,10 @@ class FirebaseMembersRepository implements MembersRepository {
 
   Stream<Family> family(String id) {
     return memberCollection.document(id).snapshots().map((snapshot) => Family.fromEntity(FamilyEntity.fromSnapshot(snapshot)));
+  }
+
+  Stream<EventGroup> eventGroup(String id) {
+    return eventCollection.document(id).snapshots().map((snapshot) => EventGroup.fromEntity(EventGroupEntity.fromSnapshot(snapshot)));
   }
 
   Stream<List<Family>> families() {

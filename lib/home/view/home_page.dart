@@ -1,3 +1,4 @@
+import 'package:air_event/event/event_page.dart';
 import 'package:air_event/update_details/update_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,6 +39,15 @@ class HomePage extends StatelessWidget {
             Text(user.email, style: textTheme.headline6),
             const SizedBox(height: 4.0),
             Text(user.name ?? '', style: textTheme.headline5),
+            FlatButton(
+              child: Text('View Events'),
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return EventPage(membersRepository: membersRepository);
+                }));
+              },
+            ),
             FlatButton(
               child: Text('Update Details'),
               onPressed: () {
