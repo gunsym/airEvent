@@ -7,7 +7,7 @@ abstract class EventEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class Fetch extends EventEvent {}
+class FetchEvent extends EventEvent {}
 
 class Updated extends EventEvent {
   final List<Event> events;

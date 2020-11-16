@@ -1,4 +1,5 @@
 import 'package:air_event/update_details/bloc/list_bloc.dart';
+import 'package:air_event/event/event_bloc.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +34,11 @@ class App extends StatelessWidget {
             create: (context) =>
                 ListBloc(membersRepository: FirebaseMembersRepository())
                   ..add(Fetch()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                EventBloc(membersRepository: FirebaseMembersRepository())
+                  ..add(FetchEvent()),
           ),
         ],
         child: AppView(),

@@ -19,7 +19,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   Stream<EventState> mapEventToState(
     EventEvent event,
   ) async* {
-    if (event is Fetch) {
+    if (event is FetchEvent) {
       yield* _mapLoadListToState();
     }
     if (event is Updated) {

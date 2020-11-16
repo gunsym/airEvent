@@ -1,4 +1,5 @@
 import 'package:air_event/event/event_bloc.dart';
+import 'package:air_event/event/event_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:members_repository/members_repository.dart';
@@ -12,7 +13,7 @@ class EventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          EventBloc(membersRepository: membersRepository)..add(Fetch()),
+          EventBloc(membersRepository: membersRepository)..add(FetchEvent()),
       child: Builder(
         builder: (context) {
           final bottom = MediaQuery.of(context).viewInsets.bottom;
@@ -56,7 +57,18 @@ class EventPage extends StatelessWidget {
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
                                 final event = events[index];
-                                return Text(event.name);
+                                return ListTile(
+                                  title: Text(event.name),
+                                  onTap: () async {
+                                    await Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                      return EventDetailsScreen(
+                                        event: index,
+                                        membersRepository: membersRepository,
+                                      );
+                                    }));
+                                  },
+                                );
                               },
                               itemCount: state.events.length,
                             );
