@@ -37,8 +37,7 @@ class App extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) =>
-                EventBloc(membersRepository: FirebaseMembersRepository())
-                  ..add(FetchEvent()),
+                EventBloc(membersRepository: FirebaseMembersRepository()),
           ),
         ],
         child: AppView(),
