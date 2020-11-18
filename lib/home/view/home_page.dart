@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 4.0),
             Text(user.name ?? '', style: textTheme.headline5),
             FlatButton(
-              child: Text('View Events'),
+              child: Text('VIEW EVENTS'),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
               },
             ),
             FlatButton(
-              child: Text('Update Details'),
+              child: Text('UPDATE DETAILS'),
               onPressed: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {

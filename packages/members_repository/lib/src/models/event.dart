@@ -5,21 +5,25 @@ class Event {
   String id;
   String code;
   String name;
+  String description;
 
   Event(
       {String id,
         this.name,
-        this.code
+        this.code,
+        this.description
       }) : this.id = id ?? Uuid().generateV4();
 
   Event copyWith({String id,
     String code,
     String name,
+    String description,
   }) {
       return Event(
         id: id ?? this.id,
         name: name ?? this.name,
         code: code ?? this.code,
+        description: code ?? this.description,
       );
   }
 
@@ -27,7 +31,8 @@ class Event {
   int get hashCode =>
   id.hashCode ^
   name.hashCode ^
-  code.hashCode;
+  code.hashCode ^
+  description.hashCode;
 
   @override
   bool operator == (Object other) =>
@@ -36,15 +41,16 @@ class Event {
           runtimeType == other.runtimeType &&
           id == other.id &&
           name == other.name &&
-          code == other.code;
+          code == other.code &&
+          description == other.description;
 
   @override
   String toString() {
-    return 'Event{code: $code, name: $name, id: $id}';
+    return 'Event{code: $code, name: $name, id: $id, description: $description}';
   }
 
   EventEntity toEntity(){
-    return EventEntity(id, code, name);
+    return EventEntity(id, code, name, description);
   }
 
   static Event fromEntity(EventEntity entity) {
@@ -52,6 +58,7 @@ class Event {
       code: entity.code,
       name: entity.name,
       id: entity.id,
+      description: entity.description,
     );
   }
 
@@ -59,6 +66,7 @@ class Event {
     code = json['code'];
     name = json['name'];
     id = json['id'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -66,6 +74,7 @@ class Event {
     data['code'] = this.code;
     data['name'] = this.name;
     data['id'] = this.id;
+    data['description'] = this.description;
     return data;
   }
 }

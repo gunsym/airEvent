@@ -1,30 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:members_repository/members_repository.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:air_event/event/event_bloc.dart';
+import 'package:members_repository/src/models/event.dart';
 
 class EventDetailsScreen extends StatelessWidget {
   final int event;
-  final MembersRepository membersRepository;
+  final List<Event> events;
 
-  EventDetailsScreen(
-      {Key key, @required this.event, @required this.membersRepository})
+  EventDetailsScreen({Key key, @required this.event, @required this.events})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EventBloc, EventState>(
-      builder: (context, state) {
-        print(state);
-        final events = (state as Loaded).events;
-        //final member = members.elementAt(index);
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Member Details'),
-          ),
-          body: events.elementAt(event) == null ? Container() : Container(),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Member Details'),
+      ),
+      body: events.elementAt(event) == null
+          ? Container(
+              child: Center(child: Text('Nothing to display')),
+            )
+          : Container(
+              child: Center(
+                child: Column(
+                  children: <Widget>[
+                    Text(events.elementAt(event).name),
+                    Text(events.elementAt(event).description),
+                    CheckboxListTile(
+                      title: Text('Gunawan'),
+                      value: false,
+                      onChanged: (bool newValue) {},
+                    ),
+                    RaisedButton(
+                      color: Colors.red[200],
+                      onPressed: () {},
+                      child: Text('REGISTER'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

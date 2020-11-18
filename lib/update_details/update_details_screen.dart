@@ -357,7 +357,7 @@ class UpdateDetailsScreen extends StatelessWidget {
                                 RaisedButton(
                                   color: Colors.red[200],
                                   onPressed: formBloc.submit,
-                                  child: Text('Save'),
+                                  child: Text('SAVE'),
                                 ),
                               ],
                             ),

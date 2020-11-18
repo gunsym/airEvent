@@ -64,7 +64,7 @@ class EventPage extends StatelessWidget {
                                         MaterialPageRoute(builder: (context) {
                                       return EventDetailsScreen(
                                         event: index,
-                                        membersRepository: membersRepository,
+                                        events: events,
                                       );
                                     }));
                                   },
