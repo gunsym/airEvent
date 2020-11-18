@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:members_repository/members_repository.dart';
 import 'package:members_repository/src/models/event.dart';
 import 'package:air_event/update_details/bloc/list_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -7,8 +8,13 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 class EventDetailsScreen extends StatelessWidget {
   final int event;
   final List<Event> events;
+  final MembersRepository membersRepository;
 
-  EventDetailsScreen({Key key, @required this.event, @required this.events})
+  EventDetailsScreen(
+      {Key key,
+      @required this.event,
+      @required this.events,
+      @required this.membersRepository})
       : super(key: key);
 
   @override
@@ -28,7 +34,8 @@ class EventDetailsScreen extends StatelessWidget {
                     Text(events.elementAt(event).name),
                     Text(events.elementAt(event).description),
                     BlocProvider(
-                      create: (context) => EventDetailsBloc(),
+                      create: (context) => EventDetailsBloc(
+                          membersRepository: membersRepository),
                       child: Builder(
                         builder: (context) {
                           final formBloc = context.watch<EventDetailsBloc>();
@@ -65,11 +72,12 @@ class EventDetailsScreen extends StatelessWidget {
 }
 
 class EventDetailsBloc extends FormBloc<String, String> {
+  final MembersRepository membersRepository;
   final name = MultiSelectFieldBloc<String, dynamic>(items: [
     'GunawanG',
     'LucyG',
   ]);
-  EventDetailsBloc() {
+  EventDetailsBloc({@required this.membersRepository}) {
     addFieldBlocs(fieldBlocs: [name]);
   }
   @override

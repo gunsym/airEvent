@@ -65,6 +65,7 @@ class EventPage extends StatelessWidget {
                                       return EventDetailsScreen(
                                         event: index,
                                         events: events,
+                                        membersRepository: membersRepository,
                                       );
                                     }));
                                   },
