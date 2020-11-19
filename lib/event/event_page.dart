@@ -1,4 +1,4 @@
-import 'package:air_event/event/event_bloc.dart';
+import 'package:air_event/event/bloc/event_bloc.dart';
 import 'package:air_event/event/event_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,7 +65,6 @@ class EventPage extends StatelessWidget {
                                       return EventDetailsScreen(
                                         event: index,
                                         events: events,
-                                        membersRepository: membersRepository,
                                       );
                                     }));
                                   },

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:members_repository/members_repository.dart';
+import 'package:air_event/update_details/bloc/all_fields_form_bloc.dart';
+import 'package:air_event/update_details/bloc/special_needs_bloc.dart';
 
 class DetailsScreen extends StatelessWidget {
   final int member;
@@ -32,104 +34,6 @@ class DetailsScreen extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-class SpecialNeedsFieldBloc extends GroupFieldBloc {
-  final ListFieldBloc<TextFieldBloc> specialNeeds;
-
-  SpecialNeedsFieldBloc({@required this.specialNeeds, String name})
-      : super([specialNeeds], name: name);
-}
-
-class AllFieldsFormBloc extends FormBloc<String, String> {
-  final firstName = TextFieldBloc(validators: [FieldBlocValidators.required]);
-  final lastName = TextFieldBloc(validators: [FieldBlocValidators.required]);
-  final email = TextFieldBloc(
-      validators: [FieldBlocValidators.required, FieldBlocValidators.email]);
-  //final specialNeeds1 = TextFieldBloc();
-//  final specialNeeds =
-//      ListFieldBloc<SpecialNeedsFieldBloc>(name: 'specialNeeds');
-  //List list = [];
-  //for(var i=0;i<10;i++){
-
-  //}
-  final int member;
-  final List<Member> members;
-  final specialNeeds = ListFieldBloc<TextFieldBloc>(
-      name: 'specialNeeds',
-      // hardcoded value, need to fix
-      fieldBlocs: List.generate(30, (index) => TextFieldBloc()));
-  final MembersRepository membersRepository;
-
-  AllFieldsFormBloc(
-      {@required this.member,
-      @required this.members,
-      @required this.membersRepository})
-      : super(isLoading: true) {
-    addFieldBlocs(fieldBlocs: [
-      firstName,
-      lastName,
-      email,
-      specialNeeds,
-    ]);
-  }
-
-  @override
-  void onLoading() async {
-    try {
-      var selectedMember = members[member];
-      firstName.updateInitialValue(selectedMember.firstName);
-      lastName.updateInitialValue(selectedMember.lastName);
-      email.updateInitialValue(selectedMember.email);
-      //specialNeeds.addFieldBloc(TextFieldBloc());
-      var last = 0;
-      for (var i = 0; i < selectedMember.specialNeeds.length; i++) {
-        specialNeeds.value[i]
-            .updateInitialValue(selectedMember.specialNeeds[i]);
-        last++;
-      }
-
-      /// todo: need to fix hardcoded value
-      for (var i = 30 - 1; i >= last; i--) {
-        specialNeeds.removeFieldBlocAt(i);
-      }
-      emitLoaded();
-    } catch (e) {
-      emitLoadFailed();
-    }
-  }
-
-  void addSpecialNeeds() {
-    specialNeeds.addFieldBloc(TextFieldBloc());
-  }
-
-  @override
-  void onSubmitting() async {
-    var memberList = members.toList();
-    var editedMember = Member(
-      email: email.value,
-      firstName: firstName.value,
-      lastName: lastName.value,
-      specialNeeds: specialNeeds.value
-          .map((specialNeedsField) => specialNeedsField.value)
-          .toList(),
-      familyCode: email.value,
-    );
-    memberList[member] = editedMember;
-
-    final familyV1 = Family(
-      /// use registration type [family / individual]
-      familyCode: 'family',
-      members: memberList,
-    );
-    print(familyV1.toString());
-    try {
-      await membersRepository.addFamily(familyV1);
-      emitSuccess(canSubmitAgain: true);
-    } catch (e) {
-      emitFailure();
-    }
   }
 }
 
@@ -315,62 +219,6 @@ class AllFieldsForm extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class SpecialNeedsCard extends StatelessWidget {
-  final int specialNeedsIndex;
-  final SpecialNeedsFieldBloc specialNeedsField;
-
-  const SpecialNeedsCard({
-    Key key,
-    @required this.specialNeedsIndex,
-    @required this.specialNeedsField,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            BlocBuilder<ListFieldBloc<TextFieldBloc>,
-                ListFieldBlocState<TextFieldBloc>>(
-              cubit: specialNeedsField.specialNeeds,
-              builder: (context, state) {
-                if (state.fieldBlocs.isNotEmpty) {
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: state.fieldBlocs.length,
-                      itemBuilder: (context, i) {
-                        return Card(
-                          color: Colors.blue[50],
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: TextFieldBlocBuilder(
-                                  textFieldBloc: state.fieldBlocs[i],
-                                  decoration: InputDecoration(
-                                    labelText: 'Special Needs #${i + 1}',
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                  icon: Icon(Icons.delete), onPressed: () {}),
-                            ],
-                          ),
-                        );
-                      });
-                }
-                return Container();
-              },
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:air_event/update_details/bloc/list_bloc.dart';
 import 'package:air_event/update_details/details_screen.dart';
-import 'package:air_event/update_details/member_tile.dart';
+import 'package:air_event/update_details/widgets/member_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';

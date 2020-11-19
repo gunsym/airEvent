@@ -1,5 +1,5 @@
 import 'package:air_event/update_details/bloc/list_bloc.dart';
-import 'package:air_event/event/event_bloc.dart';
+import 'file:///D:/Symphegy/Coding/airEventDevelop/air_event/lib/event/bloc/event_bloc.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
