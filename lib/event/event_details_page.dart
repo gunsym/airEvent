@@ -39,25 +39,28 @@ class EventDetailsScreen extends StatelessWidget {
                       child: Builder(
                         builder: (context) {
                           final formBloc = context.watch<EventDetailsBloc>();
-                          return Column(
-                            children: <Widget>[
-                              CheckboxGroupFieldBlocBuilder<String>(
-                                multiSelectFieldBloc: formBloc.name,
-                                itemBuilder: (context, item) => item,
-                                decoration: InputDecoration(
-                                    labelText: 'Member',
-                                    prefixIcon: SizedBox()),
-                              ),
-                            ],
-                          );
+                          return BlocBuilder<EventDetailsBloc, FormBlocState>(
+                              builder: (context, state) {
+                            return Column(
+                              children: <Widget>[
+                                CheckboxGroupFieldBlocBuilder<String>(
+                                  multiSelectFieldBloc: formBloc.name,
+                                  itemBuilder: (context, item) => item,
+                                  decoration: InputDecoration(
+                                      labelText: 'Select Registrants',
+                                      prefixIcon: SizedBox()),
+                                ),
+                              ],
+                            );
+                          });
                         },
                       ),
                     ),
-                    CheckboxListTile(
-                      title: Text('Gunawan'),
-                      value: false,
-                      onChanged: (bool newValue) {},
-                    ),
+//                    CheckboxListTile(
+//                      title: Text('Gunawan'),
+//                      value: false,
+//                      onChanged: (bool newValue) {},
+//                    ),
                     RaisedButton(
                       color: Colors.red[200],
                       onPressed: () {},
@@ -73,15 +76,27 @@ class EventDetailsScreen extends StatelessWidget {
 
 class EventDetailsBloc extends FormBloc<String, String> {
   final MembersRepository membersRepository;
-  final name = MultiSelectFieldBloc<String, dynamic>(items: [
-    'GunawanG',
-    'LucyG',
-  ]);
-  EventDetailsBloc({@required this.membersRepository}) {
+  final name = MultiSelectFieldBloc<String, dynamic>(
+//      items: [
+//    'GunawanG',
+//    'LucyG',
+//  ]
+      );
+  EventDetailsBloc({@required this.membersRepository})
+      : super(isLoading: true) {
     addFieldBlocs(fieldBlocs: [name]);
   }
   @override
   void onSubmitting() {
     // TODO: implement onSubmitting
+  }
+  @override
+  void onLoading() async {
+    try {
+      await name.updateItems(['gim', 'ludy']);
+      emitLoaded();
+    } catch (e) {
+      emitLoadFailed();
+    }
   }
 }
