@@ -63,6 +63,7 @@ class EventPage extends StatelessWidget {
                                     await Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) {
                                       return EventDetailsScreen(
+                                        membersRepository: membersRepository,
                                         event: index,
                                         events: events,
                                       );

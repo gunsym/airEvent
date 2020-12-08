@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:members_repository/members_repository.dart';
 import 'package:air_event/update_details/bloc/all_fields_form_bloc.dart';
-import 'package:air_event/update_details/bloc/special_needs_bloc.dart';
+//import 'package:air_event/update_details/bloc/special_needs_bloc.dart';
 
 class DetailsScreen extends StatelessWidget {
   final int member;
